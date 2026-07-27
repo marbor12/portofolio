@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050810">
-<title>Placeholder Name — Full-Stack Developer & System Analyst</title>
-<meta name="description" content="Portfolio Placeholder Name — Full-Stack Developer, System Analyst & QA Engineer.">
+<title>Portfolio Maria</title>
+<meta name="description" content="Portfolio Maria — Full-Stack Developer, System Analyst & QA Engineer.">
 <noscript><style>
   .hero-name .line span{transform:none !important;}
   .reveal, .hero-role, .project, .t-item{opacity:1 !important;transform:none !important;}
@@ -25,6 +25,17 @@
 
 <!-- Lenis Smooth Scroll -->
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+<!-- CDN Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  // Inisialisasi Client Supabase
+const SUPABASE_URL = 'https://wxgoyeptaovkheekxabm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4Z295ZXB0YW92a2hlZWt4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNjIxNjksImV4cCI6MjEwMDczODE2OX0.I7ui9Gle5zQlItggrbMwL2ItkwfRT7KrAWRsfGy3l6w';
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+</script>
+
 
 <style>
 :root{
@@ -1015,6 +1026,32 @@ function setupMobileMenu(){
   mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
   window.addEventListener('resize', ()=>{ if(window.innerWidth > 860) closeMenu(); });
 }
+
+async function loadProjects() {
+  // Ambil semua data dari tabel 'projects'
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*');
+
+  if (error) {
+    console.error('Error mengambil data:', error.message);
+    return;
+  }
+
+  console.log('Data project dari Supabase:', data);
+  // Selanjutnya Anda tinggal render 'data' ini ke dalam DOM HTML!
+}
+
+loadProjects();
+
+async function loginAdmin(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+  if (data.session) alert('Berhasil Login Admin!');
+}
+
 </script>
 </body>
 </html>
