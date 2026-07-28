@@ -734,32 +734,44 @@ CREATE POLICY "Admin Modify Access Projects" ON projects FOR ALL USING (auth.rol
     </div>
     <form id="projectForm" onsubmit="saveProject(event)">
       <input type="hidden" id="projectId">
+      
       <div class="form-group">
         <label for="pTitle">Judul Project</label>
-        <input type="text" id="pTitle" class="form-control" placeholder="Sistem Informasi..." required>
+        <input type="text" id="pTitle" class="form-control" placeholder="Contoh: Sistem Informasi Manajemen Hospital" required>
       </div>
+
       <div class="form-group">
-        <label for="pDesc">Deskripsi Singkat</label>
-        <textarea id="pDesc" class="form-control" placeholder="Jelaskan alur & fitur..." required></textarea>
+        <label for="pRole">Role / Peran Anda</label>
+        <input type="text" id="pRole" class="form-control" placeholder="Contoh: Full-Stack Developer & System Analyst" required>
       </div>
+      
       <div class="form-group">
-        <label for="pTags">Tech Stack (koma-separated)</label>
-        <input type="text" id="pTags" class="form-control" placeholder="React, Node.js, MySQL" required>
+        <label for="pDesc">Deskripsi Project</label>
+        <textarea id="pDesc" class="form-control" placeholder="Jelaskan alur, fitur utama, dan masalah yang diselesaikan..." required></textarea>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="pStatus">Status</label>
-          <select id="pStatus" class="form-control">
-            <option value="DEPLOYED & PASSED QA">DEPLOYED & PASSED QA</option>
-            <option value="IN PROGRESS">IN PROGRESS</option>
-            <option value="MAINTENANCE">MAINTENANCE</option>
-          </select>
+
+      <div class="form-group">
+        <label for="pTags">Tech Stack (pisahkan dengan koma)</label>
+        <input type="text" id="pTags" class="form-control" placeholder="React, Node.js, PostgreSQL, Tailwind" required>
+      </div>
+
+      <div class="form-group">
+        <label for="pLink">Link Project (URL Live Demo / GitHub)</label>
+        <input type="url" id="pLink" class="form-control" placeholder="https://demo-project.com atau https://github.com/...">
+      </div>
+
+      <div class="form-group">
+        <label>Gambar / Cover Project</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input type="file" id="pImageFile" accept="image/*" class="form-control" onchange="handleImageUpload(event)">
+          <span style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--ink-faint);">Atau masukkan URL Gambar langsung:</span>
+          <input type="text" id="pImage" class="form-control" placeholder="https://domain.com/gambar.jpg" oninput="updateImagePreview(this.value)">
         </div>
-        <div class="form-group">
-          <label for="pTagCode">Visual Code (Tag)</label>
-          <input type="text" id="pTagCode" class="form-control" placeholder="./project-01" value="./project-01">
+        <div id="imagePreviewBox" style="margin-top:12px;display:none;">
+          <img id="imagePreview" src="" alt="Preview Gambar" style="max-height:160px;width:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line-strong);">
         </div>
       </div>
+
       <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
         <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Batal</button>
         <button type="submit" class="btn btn-primary">Simpan Project</button>
@@ -877,14 +889,14 @@ const defaultData = {
     ]
   },
   projects: [
-    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], status: 'DEPLOYED & PASSED QA', tag_code: './project-01' },
-    { id: 2, title: 'Dashboard Analitik Placeholder', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], status: 'DEPLOYED & PASSED QA', tag_code: './project-02' },
-    { id: 3, title: 'Automation Test Suite Placeholder', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], status: 'IN PROGRESS', tag_code: './project-03' }
+    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Dashboard Analitik Placeholder', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Automation Test Suite Placeholder', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
   ],
   timeline: [
-    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' },
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
     { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
-    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' }
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
   ],
   skills: [
     { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
@@ -1137,8 +1149,13 @@ function renderProjectsGrid() {
     const tagsHtml = (Array.isArray(item.tags) ? item.tags : (item.tags || '').split(','))
       .map(t => `<span class="tag-item">${t.trim()}</span>`).join('');
     
-    const isWarn = (item.status || '').includes('PROGRESS') || (item.status || '').includes('MAINTENANCE');
-    const badgeClass = isWarn ? 'status-warn' : 'status-ok';
+    const imgHtml = item.image 
+      ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" style="width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:12px;border:1px solid var(--line-strong);">`
+      : '';
+
+    const linkHtml = item.link 
+      ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:6px;">Kunjungi Link ↗</a>`
+      : '';
 
     const card = document.createElement('div');
     card.className = 'item-card';
@@ -1146,11 +1163,13 @@ function renderProjectsGrid() {
       <div>
         <div class="card-head">
           <span class="card-num">PROJECT / 0${index + 1}</span>
-          <span class="status-tag ${badgeClass}">${item.status || 'DEPLOYED'}</span>
+          <span class="tag-item" style="color:var(--accent-2);border-color:rgba(138,180,255,0.3);">${escapeHtml(item.role || 'Developer')}</span>
         </div>
+        ${imgHtml}
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
         <div class="tag-list">${tagsHtml}</div>
+        ${linkHtml}
       </div>
       <div class="card-actions">
         <button class="btn btn-secondary btn-sm" onclick="editProject(${item.id})">Edit</button>
@@ -1161,11 +1180,37 @@ function renderProjectsGrid() {
   });
 }
 
+function updateImagePreview(url) {
+  const box = document.getElementById('imagePreviewBox');
+  const img = document.getElementById('imagePreview');
+  if (url && url.trim().length > 0) {
+    img.src = url;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const base64Str = evt.target.result;
+    document.getElementById('pImage').value = base64Str;
+    updateImagePreview(base64Str);
+    showToast('Gambar berhasil diupload!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
 function openProjectModal(isEdit = false) {
   if (!isEdit) {
     document.getElementById('projectForm').reset();
     document.getElementById('projectId').value = '';
     document.getElementById('modalProjectTitle').textContent = 'Tambah Project Baru';
+    updateImagePreview('');
   }
   document.getElementById('projectModal').classList.add('open');
 }
@@ -1175,11 +1220,14 @@ function editProject(id) {
   const p = cmsData.projects.find(item => item.id === id);
   if (!p) return;
   document.getElementById('projectId').value = p.id;
-  document.getElementById('pTitle').value = p.title;
-  document.getElementById('pDesc').value = p.description;
-  document.getElementById('pTags').value = Array.isArray(p.tags) ? p.tags.join(', ') : p.tags;
-  document.getElementById('pStatus').value = p.status;
-  document.getElementById('pTagCode').value = p.tag_code || './project-01';
+  document.getElementById('pTitle').value = p.title || '';
+  document.getElementById('pRole').value = p.role || '';
+  document.getElementById('pDesc').value = p.description || '';
+  document.getElementById('pTags').value = Array.isArray(p.tags) ? p.tags.join(', ') : (p.tags || '');
+  document.getElementById('pLink').value = p.link || '';
+  document.getElementById('pImage').value = p.image || '';
+  updateImagePreview(p.image || '');
+
   document.getElementById('modalProjectTitle').textContent = 'Edit Data Project';
   openProjectModal(true);
 }
@@ -1188,13 +1236,14 @@ async function saveProject(e) {
   e.preventDefault();
   const id = document.getElementById('projectId').value;
   const title = document.getElementById('pTitle').value;
+  const role = document.getElementById('pRole').value;
   const description = document.getElementById('pDesc').value;
   const tagsStr = document.getElementById('pTags').value;
   const tags = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
-  const status = document.getElementById('pStatus').value;
-  const tag_code = document.getElementById('pTagCode').value;
+  const link = document.getElementById('pLink').value;
+  const image = document.getElementById('pImage').value;
 
-  const payload = { title, description, tags, status, tag_code };
+  const payload = { title, role, description, tags, link, image };
 
   if (id) {
     const idx = cmsData.projects.findIndex(item => item.id == id);
@@ -1204,7 +1253,6 @@ async function saveProject(e) {
   }
 
   await saveSettingToSupabase('projects', cmsData.projects);
-  showToast('Data project berhasil disimpan!', 'success');
   closeProjectModal();
   renderProjectsGrid();
 }
@@ -1220,7 +1268,12 @@ async function deleteProject(id) {
 /* ---------- TIMELINE GRID CRUD ---------- */
 function renderTimelineGrid() {
   const grid = document.getElementById('timelineGrid');
-  const timeline = cmsData.timeline || [];
+  const rawTimeline = cmsData.timeline || [];
+  const timeline = [...rawTimeline].sort((a, b) => {
+    const yA = parseInt((a.year || '').match(/\d{4}/)?.[0] || '0');
+    const yB = parseInt((b.year || '').match(/\d{4}/)?.[0] || '0');
+    return yB - yA;
+  });
   document.getElementById('statTimelineCount').textContent = timeline.length;
   
   grid.innerHTML = '';
