@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050810">
+<title>Full CMS Admin Dashboard — Portfolio Maria</title>
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- CDN Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --bg:#050810;
+  --panel:#0a1121;
+  --panel-2:#0e1830;
+  --line:rgba(140,155,196,0.14);
+  --line-strong:rgba(140,155,196,0.28);
+  --ink:#eaf1ff;
+  --ink-dim:#8c9bc4;
+  --ink-faint:#5c6a94;
+  --accent:#4c7cff;
+  --accent-2:#8ab4ff;
+  --ok:#34d399;
+  --warn:#fbbf24;
+  --danger:#f87171;
+  --ff-display:'Space Grotesk', sans-serif;
+  --ff-body:'Inter', sans-serif;
+  --ff-mono:'JetBrains Mono', monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{ 
+  max-width:100%; 
+  overflow-x:clip; 
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--ff-body);
+  min-height:100vh;
+  cursor:none;
+}
+
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(140,155,196,0.25);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(140,155,196,0.45);}
+@media (max-width:860px), (hover:none), (pointer:coarse){ body{cursor:auto;} }
+
+::selection{background:var(--accent);color:#fff;}
+
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:64px 64px;
+  opacity:0.25;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Custom Cursor */
+.cursor{
+  position:fixed;top:0;left:0;width:8px;height:8px;border-radius:50%;
+  background:var(--accent-2);pointer-events:none;z-index:9999;
+  will-change:transform;
+  transition:width .25s ease, height .25s ease, background .25s ease;
+}
+.cursor-ring{
+  position:fixed;top:0;left:0;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line-strong);pointer-events:none;z-index:9998;
+  will-change:transform;
+  transition:width .3s ease, height .3s ease, border-color .3s ease, background .3s ease;
+}
+.cursor-ring.hover{width:64px;height:64px;background:rgba(76,124,255,0.08);border-color:var(--accent);}
+@media (max-width:860px), (hover:none), (pointer:coarse){ .cursor, .cursor-ring{display:none;} }
+
+/* Layout & Elements */
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+@media (max-width:640px){ .wrap{padding:0 20px;} }
+
+.eyebrow{
+  font-family:var(--ff-mono);font-size:0.78rem;letter-spacing:0.04em;
+  color:var(--accent-2);display:flex;align-items:center;gap:10px;
+  text-transform:none;margin-bottom:12px;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);display:inline-block;}
+.blink{animation:blink 1.1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* Admin Navbar */
+nav.admin-nav{
+  position:sticky;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;
+  background:rgba(5,8,16,0.94);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+@media (max-width:640px){ nav.admin-nav{padding:14px 20px;} }
+
+.logo{
+  font-family:var(--ff-mono);font-size:0.95rem;color:var(--ink);
+  display:flex;align-items:center;gap:10px;letter-spacing:0.02em;
+}
+.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);flex:none;}
+.badge-admin{
+  font-family:var(--ff-mono);font-size:0.7rem;color:var(--accent-2);
+  background:rgba(76,124,255,0.12);border:1px solid rgba(138,180,255,0.3);
+  padding:3px 10px;border-radius:100px;margin-left:8px;
+}
+
+.nav-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.user-email{font-family:var(--ff-mono);font-size:0.8rem;color:var(--ink-dim);}
+
+.btn{
+  font-family:var(--ff-mono);font-size:0.8rem;
+  padding:9px 18px;border-radius:100px;
+  border:none;cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .25s ease;
+}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent-2);color:var(--bg);transform:translateY(-1px);}
+.btn-secondary{background:var(--panel-2);color:var(--ink-dim);border:1px solid var(--line-strong);}
+.btn-secondary:hover{color:var(--ink);border-color:var(--accent-2);background:rgba(140,155,196,0.15);}
+.btn-danger{background:rgba(248,113,113,0.15);color:var(--danger);border:1px solid rgba(248,113,113,0.3);}
+.btn-danger:hover{background:var(--danger);color:#fff;}
+.btn-sm{padding:6px 14px;font-size:0.75rem;}
+
+/* Login Form Box */
+.login-container{
+  min-height:85vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;position:relative;z-index:2;
+}
+.login-box{
+  width:100%;max-width:440px;
+  background:rgba(10,17,33,0.92);
+  border:1px solid var(--line-strong);
+  border-radius:16px;
+  padding:36px 32px;
+  box-shadow:0 24px 60px -15px rgba(76,124,255,0.25);
+  backdrop-filter:blur(16px);
+}
+@media (max-width:480px){ .login-box{padding:28px 20px;} }
+
+.login-head{margin-bottom:28px;text-align:center;}
+.login-head h1{font-family:var(--ff-display);font-size:1.8rem;font-weight:700;margin-top:6px;}
+
+.form-group{margin-bottom:20px;}
+.form-group label{
+  display:block;font-family:var(--ff-mono);font-size:0.78rem;
+  color:var(--ink-dim);margin-bottom:8px;
+}
+.form-control{
+  width:100%;
+  font-family:var(--ff-body);font-size:0.9rem;
+  background:var(--bg);color:var(--ink);
+  border:1px solid var(--line-strong);
+  border-radius:8px;padding:12px 16px;
+  outline:none;transition:border-color .25s ease, box-shadow .25s ease;
+}
+.form-control:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(76,124,255,0.2);
+}
+textarea.form-control{min-height:110px;resize:vertical;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media (max-width:600px){ .form-row{grid-template-columns:1fr;} }
+
+.login-note{
+  margin-top:20px;padding:14px;
+  background:rgba(140,155,196,0.06);border:1px dashed var(--line-strong);
+  border-radius:8px;font-family:var(--ff-mono);font-size:0.73rem;
+  color:var(--ink-faint);line-height:1.5;
+}
+
+/* Dashboard Content */
+.dashboard-content{padding:36px 0 80px;position:relative;z-index:2;}
+
+/* Quick Stats Bar */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+  gap:16px;margin-bottom:32px;
+}
+.stat-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:18px 20px;
+  transition:transform .3s ease, border-color .3s ease;
+}
+.stat-card:hover{border-color:var(--line-strong);transform:translateY(-2px);}
+.stat-card span{font-family:var(--ff-mono);font-size:0.73rem;color:var(--ink-faint);display:block;margin-bottom:6px;}
+.stat-card b{font-family:var(--ff-display);font-size:1.7rem;font-weight:700;color:var(--ink);}
+
+/* Navigation Tabs */
+.tabs-nav{
+  display:flex;gap:8px;border-bottom:1px solid var(--line);
+  padding-bottom:14px;margin-bottom:32px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.tab-btn{
+  font-family:var(--ff-mono);font-size:0.8rem;color:var(--ink-dim);
+  background:none;border:1px solid transparent;padding:9px 16px;border-radius:8px;
+  cursor:pointer;white-space:nowrap;transition:all .25s ease;
+}
+.tab-btn:hover{color:var(--ink);background:rgba(140,155,196,0.08);}
+.tab-btn.active{
+  color:var(--bg);background:var(--accent-2);
+  border-color:var(--accent-2);
+  font-weight:600;
+}
+
+/* Tab Panels */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.panel-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:32px;margin-bottom:32px;
+}
+@media (max-width:640px){ .panel-card{padding:20px;} }
+
+.panel-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:24px;flex-wrap:wrap;gap:16px;
+}
+.panel-title{font-family:var(--ff-display);font-size:1.4rem;font-weight:700;}
+
+/* Data Table / Cards Grid */
+.admin-grid{
+  display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+  gap:20px;
+}
+@media (max-width:700px){ .admin-grid{grid-template-columns:1fr;} }
+
+.item-card{
+  background:var(--panel-2);border:1px solid var(--line);
+  border-radius:14px;padding:22px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  transition:border-color .3s ease, transform .3s ease;
+}
+.item-card:hover{border-color:var(--line-strong);transform:translateY(-3px);}
+
+.item-card .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.item-card .card-num{font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);}
+.item-card h3{font-family:var(--ff-display);font-size:1.15rem;font-weight:600;margin-bottom:8px;}
+.item-card p{font-size:0.86rem;color:var(--ink-dim);line-height:1.6;margin-bottom:14px;}
+
+.tag-list{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tag-item{
+  font-family:var(--ff-mono);font-size:0.7rem;color:var(--ink-dim);
+  background:var(--bg);border:1px solid var(--line-strong);
+  padding:3px 9px;border-radius:100px;
+}
+
+.status-tag{
+  font-family:var(--ff-mono);font-size:0.7rem;
+  padding:3px 10px;border-radius:100px;display:inline-block;
+}
+.status-ok{background:rgba(52,211,153,0.12);color:var(--ok);border:1px solid rgba(52,211,153,0.3);}
+.status-warn{background:rgba(251,191,36,0.12);color:var(--warn);border:1px solid rgba(251,191,36,0.3);}
+
+.card-actions{
+  display:flex;gap:8px;margin-top:14px;padding-top:14px;
+  border-top:1px solid var(--line);justify-content:flex-end;
+}
+
+/* Modal Popup */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(5,8,16,0.88);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;visibility:hidden;
+  transition:all .3s ease;
+}
+.modal-overlay.open{opacity:1;visibility:visible;}
+
+.modal-content{
+  width:100%;max-width:620px;max-height:90vh;overflow-y:auto;
+  background:var(--panel);border:1px solid var(--line-strong);
+  border-radius:16px;padding:32px;
+  box-shadow:0 24px 60px -15px rgba(0,0,0,0.5);
+  transform:translateY(20px);transition:transform .3s ease;
+}
+.modal-overlay.open .modal-content{transform:translateY(0);}
+
+.modal-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--line);
+}
+.modal-head h2{font-family:var(--ff-display);font-size:1.3rem;font-weight:700;}
+.close-modal{
+  background:none;border:none;color:var(--ink-dim);
+  font-size:1.4rem;cursor:pointer;line-height:1;
+}
+.close-modal:hover{color:var(--ink);}
+
+/* Toast Notifications */
+.toast-container{
+  position:fixed;bottom:24px;right:24px;z-index:300;
+  display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  font-family:var(--ff-mono);font-size:0.8rem;
+  padding:12px 20px;border-radius:8px;
+  background:var(--panel-2);color:var(--ink);
+  border:1px solid var(--line-strong);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  display:flex;align-items:center;gap:10px;
+  animation:toastIn .3s ease;
+}
+.toast.success{border-color:var(--ok);color:var(--ok);}
+.toast.error{border-color:var(--danger);color:var(--danger);}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Code Preview Box */
+.code-box{
+  background:var(--bg);border:1px solid var(--line-strong);
+  border-radius:10px;padding:16px;font-family:var(--ff-mono);
+  font-size:0.78rem;color:var(--accent-2);line-height:1.6;
+  white-space:pre-wrap;overflow-x:auto;margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor" id="cursorDot"></div>
+
+<!-- NAVIGATION BAR -->
+<nav class="admin-nav">
+  <div class="logo">
+    <span class="dot"></span>
+    mariaboro.dev
+    <span class="badge-admin">FULL CMS CONTROL</span>
+  </div>
+  <div class="nav-actions">
+    <a href="index.html" target="_blank" class="btn btn-secondary btn-sm">Lihat Hasil di Web Utama ↗</a>
+    <span class="user-email" id="userEmailDisplay">Guest</span>
+    <button class="btn btn-danger btn-sm" id="logoutBtn" style="display:none;" onclick="handleLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-container">
+  <div class="login-box">
+    <div class="login-head">
+      <div class="eyebrow" style="justify-content:center;">CMS.ADMIN_AUTH <span class="blink">_</span></div>
+      <h1>Login CMS Admin</h1>
+    </div>
+    
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="adminEmail">Email Address</label>
+        <input type="email" id="adminEmail" class="form-control" placeholder="admin@mariaboro.dev" required>
+      </div>
+      <div class="form-group">
+        <label for="adminPassword">Password</label>
+        <input type="password" id="adminPassword" class="form-control" placeholder="••••••••••••" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="loginBtn">
+        Akses Dashboard CMS
+      </button>
+    </form>
+
+    <div class="login-note">
+      🔒 <strong>Sistem Terintegrasi Supabase:</strong><br>
+      Mengubah data di admin ini akan langsung mengupdate konten di web utama.
+      <br><br>
+      💡 <em>Fitur Mode Demo langsung tersedia jika belum login.</em>
+      <div style="margin-top:10px;text-align:center;">
+        <button class="btn btn-secondary btn-sm" onclick="enableDemoMode()">Masuk Mode Preview Demo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CMS DASHBOARD -->
+<main id="adminDashboard" class="dashboard-content" style="display:none;">
+  <div class="wrap">
+    
+    <!-- STATS OVERVIEW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span>HERO &amp; PROFILE</span>
+        <b style="font-size:1.1rem;color:var(--accent-2);">ACTIVE</b>
+      </div>
+      <div class="stat-card">
+        <span>TOTAL PROJECTS</span>
+        <b id="statProjectsCount">0</b>
+      </div>
+      <div class="stat-card">
+        <span>TIMELINE ITEMS</span>
+        <b id="statTimelineCount">0</b>
+      </div>
+      <div class="stat-card">
+        <span>KONEKSI SUPABASE</span>
+        <b style="font-size:1.1rem;color:var(--ok);" id="statConnection">TERHUBUNG</b>
+      </div>
+    </div>
+
+    <!-- TABS NAVIGATION FOR ALL SECTIONS -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('heroTab', this)">01 — Hero &amp; Bio</button>
+      <button class="tab-btn" onclick="switchTab('aboutTab', this)">02 — About &amp; Stats</button>
+      <button class="tab-btn" onclick="switchTab('projectsTab', this)">03 — Projects (Work)</button>
+      <button class="tab-btn" onclick="switchTab('timelineTab', this)">04 — Timeline (Exp)</button>
+      <button class="tab-btn" onclick="switchTab('skillsTab', this)">05 — Skills &amp; Stack</button>
+      <button class="tab-btn" onclick="switchTab('contactTab', this)">06 — Contact &amp; Socials</button>
+      <button class="tab-btn" onclick="switchTab('marqueeTab', this)">07 — Marquee Stack</button>
+      <button class="tab-btn" onclick="switchTab('setupTab', this)">08 — SQL Setup</button>
+    </div>
+
+    <!-- TAB 1: HERO & BIO -->
+    <section id="heroTab" class="tab-panel active">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">SECTION HERO</div>
+            <h2 class="panel-title">Kelola Nama, Role &amp; Teks Terminal</h2>
+          </div>
+          <button class="btn btn-primary" onclick="saveHeroSection()">Simpan Perubahan Hero</button>
+        </div>
+
+        <form id="heroForm" onsubmit="event.preventDefault(); saveHeroSection();">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nama Depan (Line 1)</label>
+              <input type="text" id="heroFirstName" class="form-control" value="Maria Oxtavia Laurence">
+            </div>
+            <div class="form-group">
+              <label>Nama Belakang (Line 2)</label>
+              <input type="text" id="heroLastName" class="form-control" value="Siboro">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Sub-Judul / Role</label>
+            <input type="text" id="heroRole" class="form-control" value="Full-Stack Developer — System Analyst — QA Engineer">
+          </div>
+
+          <div class="form-group">
+            <label>Deskripsi Hero (Paragraf)</label>
+            <textarea id="heroDesc" class="form-control">Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.</textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pengalaman (Tahun)</label>
+              <input type="text" id="heroExpYears" class="form-control" value="4+ years learning & building">
+            </div>
+            <div class="form-group">
+              <label>Project Shipped</label>
+              <input type="text" id="heroProjectsCount" class="form-control" value="12+ projects shipped">
+            </div>
+            <div class="form-group">
+              <label>Lokasi / Status Availability</label>
+              <input type="text" id="heroLocation" class="form-control" value="Bandung, ID based, open to remote">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Perintah Terminal (Pisahkan tiap baris dengan Enter)</label>
+            <textarea id="terminalLines" class="form-control" style="font-family:var(--ff-mono);font-size:0.8rem;">$ whoami
+> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst
+$ status --check
+> [OK] Available for full-stack & analyst roles
+$ run tests --all
+> 42 passed, 0 failed [100% test coverage]</textarea>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 2: ABOUT & STATS -->
+    <section id="aboutTab" class="tab-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">SECTION ABOUT</div>
+            <h2 class="panel-title">Kelola Paragraf &amp; Angka Statistik</h2>
+          </div>
+          <button class="btn btn-primary" onclick="saveAboutSection()">Simpan Section About</button>
+        </div>
+
+        <form id="aboutForm" onsubmit="event.preventDefault(); saveAboutSection();">
+          <div class="form-group">
+            <label>Judul Utama (Sec Title)</label>
+            <input type="text" id="aboutTitle" class="form-control" value="Berpikir seperti analis, membangun seperti developer.">
+          </div>
+
+          <div class="form-group">
+            <label>Catatan Samping (Sec Note)</label>
+            <input type="text" id="aboutNote" class="form-control" value="Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode.">
+          </div>
+
+          <div class="form-group">
+            <label>Paragraf 1</label>
+            <textarea id="aboutP1" class="form-control">Saya Maria Oxtavia Laurence Siboro, lulusan Sistem Informasi yang bergerak di persimpangan antara pengembangan perangkat lunak, analisis sistem, dan quality assurance.</textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Paragraf 2</label>
+            <textarea id="aboutP2" class="form-control">Saya percaya produk yang baik lahir dari proses yang tertata: memahami masalah, merancang alur sistem yang jelas, membangun dengan kode yang rapi, lalu mengujinya sampai benar-benar siap dipakai.</textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Paragraf 3</label>
+            <textarea id="aboutP3" class="form-control">Di luar layar kode, saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya.</textarea>
+          </div>
+
+          <h3 style="font-family:var(--ff-display);margin:24px 0 16px;">Kartu Statistik About</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Stat 1 (Angka &amp; Label)</label>
+              <input type="text" id="stat1Val" class="form-control" value="15+" style="margin-bottom:6px;">
+              <input type="text" id="stat1Lbl" class="form-control" value="WEB APPS BUILT">
+            </div>
+            <div class="form-group">
+              <label>Stat 2 (Angka &amp; Label)</label>
+              <input type="text" id="stat2Val" class="form-control" value="200+" style="margin-bottom:6px;">
+              <input type="text" id="stat2Lbl" class="form-control" value="TEST CASES WRITTEN">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Stat 3 (Angka &amp; Label)</label>
+              <input type="text" id="stat3Val" class="form-control" value="6" style="margin-bottom:6px;">
+              <input type="text" id="stat3Lbl" class="form-control" value="SYSTEM DESIGN DOCS">
+            </div>
+            <div class="form-group">
+              <label>Stat 4 (Angka &amp; Label)</label>
+              <input type="text" id="stat4Val" class="form-control" value="98%" style="margin-bottom:6px;">
+              <input type="text" id="stat4Lbl" class="form-control" value="BUG RESOLUTION RATE">
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 3: PROJECTS MANAGEMENT -->
+    <section id="projectsTab" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <div class="eyebrow">PORTFOLIO ITEMS</div>
+          <h2 class="panel-title">Daftar Project (Selected Work)</h2>
+        </div>
+        <button class="btn btn-primary" onclick="openProjectModal()">+ Tambah Project Baru</button>
+      </div>
+
+      <div class="admin-grid" id="projectsGrid"></div>
+    </section>
+
+    <!-- TAB 4: TIMELINE MANAGEMENT -->
+    <section id="timelineTab" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <div class="eyebrow">TIMELINE / EXPERIENCE</div>
+          <h2 class="panel-title">Pengalaman &amp; Pendidikan</h2>
+        </div>
+        <button class="btn btn-primary" onclick="openTimelineModal()">+ Tambah Timeline Baru</button>
+      </div>
+
+      <div class="admin-grid" id="timelineGrid"></div>
+    </section>
+
+    <!-- TAB 5: SKILLS MANAGEMENT -->
+    <section id="skillsTab" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <div class="eyebrow">TECH STACK &amp; SKILLS</div>
+          <h2 class="panel-title">Kategori Skill</h2>
+        </div>
+        <button class="btn btn-primary" onclick="openSkillModal()">+ Tambah Kategori Skill</button>
+      </div>
+
+      <div class="admin-grid" id="skillsGrid"></div>
+    </section>
+
+    <!-- TAB 6: CONTACT & SOCIALS -->
+    <section id="contactTab" class="tab-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">CONTACT &amp; FOOTER</div>
+            <h2 class="panel-title">Kelola Link Kontak &amp; Media Sosial</h2>
+          </div>
+          <button class="btn btn-primary" onclick="saveContactSection()">Simpan Kontak &amp; Socials</button>
+        </div>
+
+        <form id="contactForm" onsubmit="event.preventDefault(); saveContactSection();">
+          <div class="form-group">
+            <label>Judul Kontak (Heading)</label>
+            <input type="text" id="contactTitle" class="form-control" value="Mari bangun sesuatu bersama.">
+          </div>
+
+          <div class="form-group">
+            <label>Email Utama</label>
+            <input type="email" id="contactEmail" class="form-control" value="hello@mariaboro.my.id">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>URL GitHub</label>
+              <input type="url" id="contactGithub" class="form-control" value="https://github.com/mariaboro">
+            </div>
+            <div class="form-group">
+              <label>URL LinkedIn</label>
+              <input type="url" id="contactLinkedin" class="form-control" value="https://www.linkedin.com/in/mariaboro/">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>URL Instagram</label>
+              <input type="url" id="contactInstagram" class="form-control" value="https://www.instagram.com/mariaboro_/">
+            </div>
+            <div class="form-group">
+              <label>URL CV / Resume</label>
+              <input type="text" id="contactCv" class="form-control" value="#">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Teks Hak Cipta Footer</label>
+            <input type="text" id="footerText" class="form-control" value="© 2026 Maria Oxtavia Laurence Siboro. Built with intent.">
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 7: MARQUEE TECH STACK -->
+    <section id="marqueeTab" class="tab-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">MARQUEE BANNER</div>
+            <h2 class="panel-title">Daftar Keyword Marquee Running Text</h2>
+          </div>
+          <button class="btn btn-primary" onclick="saveMarqueeSection()">Simpan Marquee</button>
+        </div>
+
+        <form id="marqueeForm" onsubmit="event.preventDefault(); saveMarqueeSection();">
+          <div class="form-group">
+            <label>Daftar Teknologi / Keywords (pisahkan dengan koma)</label>
+            <textarea id="marqueeItems" class="form-control" style="min-height:100px;">React, Node.js, Laravel, PostgreSQL, System Analysis, UML, Manual & Automation Testing, Figma, Git, REST API</textarea>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 8: SQL SETUP -->
+    <section id="setupTab" class="tab-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">DATABASE CONFIGURATION</div>
+            <h2 class="panel-title">Struktur Skema Supabase SQL Lengkap</h2>
+          </div>
+        </div>
+
+        <p style="color:var(--ink-dim);line-height:1.7;margin-bottom:16px;">
+          Jalankan script SQL di bawah ini di <strong>SQL Editor Supabase Dashboard</strong> untuk membuat tabel `site_settings`, `projects`, `experiences`, dan `skills`:
+        </p>
+
+        <div class="code-box">-- 1. Tabel Site Settings (Hero, About, Contact, Marquee)
+CREATE TABLE IF NOT EXISTS site_settings (
+  id TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 2. Tabel Projects
+CREATE TABLE IF NOT EXISTS projects (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  tags TEXT[] NOT NULL,
+  status TEXT DEFAULT 'DEPLOYED & PASSED QA',
+  tag_code TEXT DEFAULT './project-01',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 3. Tabel Experiences / Timeline
+CREATE TABLE IF NOT EXISTS experiences (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  year TEXT NOT NULL,
+  title TEXT NOT NULL,
+  role TEXT NOT NULL,
+  description TEXT NOT NULL,
+  date_range TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4. Tabel Skills
+CREATE TABLE IF NOT EXISTS skills (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  category_num TEXT NOT NULL,
+  title TEXT NOT NULL,
+  items TEXT[] NOT NULL
+);
+
+-- 5. Aktifkan RLS untuk keamanan
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE experiences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public Read Access Settings" ON site_settings FOR SELECT USING (true);
+CREATE POLICY "Admin Modify Access Settings" ON site_settings FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Public Read Access Projects" ON projects FOR SELECT USING (true);
+CREATE POLICY "Admin Modify Access Projects" ON projects FOR ALL USING (auth.role() = 'authenticated');</div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- MODAL FORM PROJECT -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2 id="modalProjectTitle">Tambah Project Baru</h2>
+      <button class="close-modal" onclick="closeProjectModal()">&times;</button>
+    </div>
+    <form id="projectForm" onsubmit="saveProject(event)">
+      <input type="hidden" id="projectId">
+      <div class="form-group">
+        <label for="pTitle">Judul Project</label>
+        <input type="text" id="pTitle" class="form-control" placeholder="Sistem Informasi..." required>
+      </div>
+      <div class="form-group">
+        <label for="pDesc">Deskripsi Singkat</label>
+        <textarea id="pDesc" class="form-control" placeholder="Jelaskan alur & fitur..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="pTags">Tech Stack (koma-separated)</label>
+        <input type="text" id="pTags" class="form-control" placeholder="React, Node.js, MySQL" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pStatus">Status</label>
+          <select id="pStatus" class="form-control">
+            <option value="DEPLOYED & PASSED QA">DEPLOYED & PASSED QA</option>
+            <option value="IN PROGRESS">IN PROGRESS</option>
+            <option value="MAINTENANCE">MAINTENANCE</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pTagCode">Visual Code (Tag)</label>
+          <input type="text" id="pTagCode" class="form-control" placeholder="./project-01" value="./project-01">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+        <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL FORM TIMELINE -->
+<div class="modal-overlay" id="timelineModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2 id="modalTimelineTitle">Tambah Timeline / Experience</h2>
+      <button class="close-modal" onclick="closeTimelineModal()">&times;</button>
+    </div>
+    <form id="timelineForm" onsubmit="saveTimeline(event)">
+      <input type="hidden" id="tId">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tYear">Tahun Singkat (Tampil Kiri)</label>
+          <input type="text" id="tYear" class="form-control" placeholder="2025" required>
+        </div>
+        <div class="form-group">
+          <label for="tDate">Rentang Tanggal (Kanan)</label>
+          <input type="text" id="tDate" class="form-control" placeholder="2025 — sekarang" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tTitle">Judul Posisi / Institusi</label>
+        <input type="text" id="tTitle" class="form-control" placeholder="Freelance Full-Stack Developer" required>
+      </div>
+      <div class="form-group">
+        <label for="tRole">Peran / Sub-role</label>
+        <input type="text" id="tRole" class="form-control" placeholder="Self-employed" required>
+      </div>
+      <div class="form-group">
+        <label for="tDesc">Deskripsi Tugas</label>
+        <textarea id="tDesc" class="form-control" placeholder="Menulis test case, perancangan sistem..." required></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+        <button type="button" class="btn btn-secondary" onclick="closeTimelineModal()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Timeline</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL FORM SKILLS -->
+<div class="modal-overlay" id="skillsModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2 id="modalSkillTitle">Tambah / Edit Skill Card</h2>
+      <button class="close-modal" onclick="closeSkillModal()">&times;</button>
+    </div>
+    <form id="skillsForm" onsubmit="saveSkill(event)">
+      <input type="hidden" id="sId">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sNum">Nomor Kategori (misal: / 01)</label>
+          <input type="text" id="sNum" class="form-control" placeholder="/ 01" required>
+        </div>
+        <div class="form-group">
+          <label for="sCategory">Nama Kategori</label>
+          <input type="text" id="sCategory" class="form-control" placeholder="Front-End" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="sList">List Skill (pisahkan dengan koma)</label>
+        <textarea id="sList" class="form-control" placeholder="React / Next.js, JavaScript, Tailwind CSS" required></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+        <button type="button" class="btn btn-secondary" onclick="closeSkillModal()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Skill</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ---------- INITIALIZATION & STORAGE SYSTEM ---------- */
+const SUPABASE_URL = 'https://wxgoyeptaovkheekxabm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4Z295ZXB0YW92a2hlZWt4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNjIxNjksImV4cCI6MjEwMDczODE2OX0.I7ui9Gle5zQlItggrbMwL2ItkwfRT7KrAWRsfGy3l6w';
+
+let supabaseClient = null;
+if (typeof supabase !== 'undefined') {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// Fallback Store Data (Tersimpan di LocalStorage agar sinkron jika Supabase offline)
+const defaultData = {
+  hero: {
+    firstName: "Maria Oxtavia Laurence",
+    lastName: "Siboro",
+    role: "Full-Stack Developer — System Analyst — QA Engineer",
+    desc: "Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.",
+    expYears: "4+ years learning & building",
+    projectsCount: "12+ projects shipped",
+    location: "Bandung, ID based, open to remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+  },
+  about: {
+    title: "Berpikir seperti analis, membangun seperti developer.",
+    note: "Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode.",
+    p1: "Saya Maria Oxtavia Laurence Siboro, lulusan Sistem Informasi yang bergerak di persimpangan antara pengembangan perangkat lunak, analisis sistem, dan quality assurance.",
+    p2: "Saya percaya produk yang baik lahir dari proses yang tertata: memahami masalah, merancang alur sistem yang jelas, membangun dengan kode yang rapi, lalu mengujinya sampai benar-benar siap dipakai.",
+    p3: "Di luar layar kode, saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya.",
+    stats: [
+      { val: "15+", lbl: "WEB APPS BUILT" },
+      { val: "200+", lbl: "TEST CASES WRITTEN" },
+      { val: "6", lbl: "SYSTEM DESIGN DOCS" },
+      { val: "98%", lbl: "BUG RESOLUTION RATE" }
+    ]
+  },
+  projects: [
+    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], status: 'DEPLOYED & PASSED QA', tag_code: './project-01' },
+    { id: 2, title: 'Dashboard Analitik Placeholder', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], status: 'DEPLOYED & PASSED QA', tag_code: './project-02' },
+    { id: 3, title: 'Automation Test Suite Placeholder', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], status: 'IN PROGRESS', tag_code: './project-03' }
+  ],
+  timeline: [
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' },
+    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' }
+  ],
+  skills: [
+    { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
+    { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
+    { id: 3, num: '/ 03', title: 'System Analysis', list: ['Requirement Gathering', 'UML & Flowchart', 'Database Design (ERD)', 'Business Process Modeling'] },
+    { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Manual Testing', 'Test Case & Test Plan', 'Bug Tracking', 'Basic Automation (Selenium)'] }
+  ],
+  contact: {
+    title: "Mari bangun sesuatu bersama.",
+    email: "hello@mariaboro.my.id",
+    github: "https://github.com/mariaboro",
+    linkedin: "https://www.linkedin.com/in/mariaboro/",
+    instagram: "https://www.instagram.com/mariaboro_/",
+    cv: "#",
+    footerText: "© 2026 Maria Oxtavia Laurence Siboro. Built with intent."
+  },
+  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API']
+};
+
+function getLocalData() {
+  const saved = localStorage.getItem('porto_cms_data');
+  return saved ? JSON.parse(saved) : defaultData;
+}
+
+function saveLocalData(data) {
+  localStorage.setItem('porto_cms_data', JSON.stringify(data));
+}
+
+let cmsData = getLocalData();
+let isDemoMode = false;
+
+/* ---------- AUTH HANDLERS ---------- */
+document.addEventListener('DOMContentLoaded', async () => {
+  setupCustomCursor();
+  
+  if (supabaseClient) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      onLoginSuccess(session.user.email);
+    } else {
+      showLoginScreen();
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        onLoginSuccess(session.user.email);
+      } else if (!isDemoMode) {
+        showLoginScreen();
+      }
+    });
+  }
+});
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('adminEmail').value;
+  const password = document.getElementById('adminPassword').value;
+  const btn = document.getElementById('loginBtn');
+  
+  btn.textContent = 'Memverifikasi...';
+  btn.disabled = true;
+
+  if (supabaseClient) {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      showToast(error.message, 'error');
+      btn.textContent = 'Akses Dashboard CMS';
+      btn.disabled = false;
+    } else {
+      showToast('Login Berhasil! Mengalihkan...', 'success');
+      onLoginSuccess(data.user.email);
+    }
+  } else {
+    enableDemoMode();
+  }
+}
+
+function enableDemoMode() {
+  isDemoMode = true;
+  showToast('Masuk dalam Mode Preview Demo CMS Admin', 'success');
+  onLoginSuccess('demo-admin@mariaboro.dev');
+}
+
+async function handleLogout() {
+  if (supabaseClient && !isDemoMode) {
+    await supabaseClient.auth.signOut();
+  }
+  isDemoMode = false;
+  showToast('Berhasil Logout', 'success');
+  showLoginScreen();
+}
+
+function onLoginSuccess(email) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminDashboard').style.display = 'block';
+  document.getElementById('userEmailDisplay').textContent = email;
+  document.getElementById('logoutBtn').style.display = 'inline-flex';
+  
+  loadAllDataIntoForm();
+}
+
+function showLoginScreen() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('userEmailDisplay').textContent = 'Guest';
+  document.getElementById('logoutBtn').style.display = 'none';
+}
+
+/* ---------- CMS LOAD & SAVE LOGIC ---------- */
+async function loadAllDataIntoForm() {
+  // Try fetching from Supabase settings table if logged in
+  if (supabaseClient && !isDemoMode) {
+    const { data } = await supabaseClient.from('site_settings').select('*');
+    if (data && data.length > 0) {
+      data.forEach(row => {
+        if (row.id && row.data) cmsData[row.id] = row.data;
+      });
+      saveLocalData(cmsData);
+    }
+  }
+
+  // Populate Hero
+  const h = cmsData.hero || defaultData.hero;
+  document.getElementById('heroFirstName').value = h.firstName;
+  document.getElementById('heroLastName').value = h.lastName;
+  document.getElementById('heroRole').value = h.role;
+  document.getElementById('heroDesc').value = h.desc;
+  document.getElementById('heroExpYears').value = h.expYears;
+  document.getElementById('heroProjectsCount').value = h.projectsCount;
+  document.getElementById('heroLocation').value = h.location;
+  document.getElementById('terminalLines').value = h.terminalLines;
+
+  // Populate About
+  const a = cmsData.about || defaultData.about;
+  document.getElementById('aboutTitle').value = a.title;
+  document.getElementById('aboutNote').value = a.note;
+  document.getElementById('aboutP1').value = a.p1;
+  document.getElementById('aboutP2').value = a.p2;
+  document.getElementById('aboutP3').value = a.p3;
+  if (a.stats && a.stats.length >= 4) {
+    document.getElementById('stat1Val').value = a.stats[0].val; document.getElementById('stat1Lbl').value = a.stats[0].lbl;
+    document.getElementById('stat2Val').value = a.stats[1].val; document.getElementById('stat2Lbl').value = a.stats[1].lbl;
+    document.getElementById('stat3Val').value = a.stats[2].val; document.getElementById('stat3Lbl').value = a.stats[2].lbl;
+    document.getElementById('stat4Val').value = a.stats[3].val; document.getElementById('stat4Lbl').value = a.stats[3].lbl;
+  }
+
+  // Populate Contact
+  const c = cmsData.contact || defaultData.contact;
+  document.getElementById('contactTitle').value = c.title;
+  document.getElementById('contactEmail').value = c.email;
+  document.getElementById('contactGithub').value = c.github;
+  document.getElementById('contactLinkedin').value = c.linkedin;
+  document.getElementById('contactInstagram').value = c.instagram;
+  document.getElementById('contactCv').value = c.cv;
+  document.getElementById('footerText').value = c.footerText;
+
+  // Populate Marquee
+  const m = cmsData.marquee || defaultData.marquee;
+  document.getElementById('marqueeItems').value = Array.isArray(m) ? m.join(', ') : m;
+
+  renderProjectsGrid();
+  renderTimelineGrid();
+  renderSkillsGrid();
+}
+
+/* ---------- SECTION SAVERS ---------- */
+async function saveSettingToSupabase(key, payload) {
+  cmsData[key] = payload;
+  saveLocalData(cmsData);
+
+  if (supabaseClient && !isDemoMode) {
+    try {
+      const { error } = await supabaseClient.from('site_settings').upsert({ id: key, data: payload });
+      if (error) {
+        console.error('Error saving to Supabase:', error);
+        showToast('⚠️ Data disimpan di Browser (Local). Supabase: ' + error.message, 'error');
+        return;
+      }
+    } catch (e) {
+      console.error('Supabase exception:', e);
+      showToast('⚠️ Data disimpan di LocalStorage.', 'error');
+      return;
+    }
+  }
+  showToast('Berhasil disimpan!', 'success');
+}
+
+async function saveHeroSection() {
+  const heroData = {
+    firstName: document.getElementById('heroFirstName').value,
+    lastName: document.getElementById('heroLastName').value,
+    role: document.getElementById('heroRole').value,
+    desc: document.getElementById('heroDesc').value,
+    expYears: document.getElementById('heroExpYears').value,
+    projectsCount: document.getElementById('heroProjectsCount').value,
+    location: document.getElementById('heroLocation').value,
+    terminalLines: document.getElementById('terminalLines').value
+  };
+  await saveSettingToSupabase('hero', heroData);
+  showToast('Section Hero berhasil diperbarui!', 'success');
+}
+
+async function saveAboutSection() {
+  const aboutData = {
+    title: document.getElementById('aboutTitle').value,
+    note: document.getElementById('aboutNote').value,
+    p1: document.getElementById('aboutP1').value,
+    p2: document.getElementById('aboutP2').value,
+    p3: document.getElementById('aboutP3').value,
+    stats: [
+      { val: document.getElementById('stat1Val').value, lbl: document.getElementById('stat1Lbl').value },
+      { val: document.getElementById('stat2Val').value, lbl: document.getElementById('stat2Lbl').value },
+      { val: document.getElementById('stat3Val').value, lbl: document.getElementById('stat3Lbl').value },
+      { val: document.getElementById('stat4Val').value, lbl: document.getElementById('stat4Lbl').value }
+    ]
+  };
+  await saveSettingToSupabase('about', aboutData);
+  showToast('Section About & Stats berhasil diperbarui!', 'success');
+}
+
+async function saveContactSection() {
+  const contactData = {
+    title: document.getElementById('contactTitle').value,
+    email: document.getElementById('contactEmail').value,
+    github: document.getElementById('contactGithub').value,
+    linkedin: document.getElementById('contactLinkedin').value,
+    instagram: document.getElementById('contactInstagram').value,
+    cv: document.getElementById('contactCv').value,
+    footerText: document.getElementById('footerText').value
+  };
+  await saveSettingToSupabase('contact', contactData);
+  showToast('Section Contact & Socials berhasil diperbarui!', 'success');
+}
+
+async function saveMarqueeSection() {
+  const rawStr = document.getElementById('marqueeItems').value;
+  const marqueeData = rawStr.split(',').map(s => s.trim()).filter(Boolean);
+  await saveSettingToSupabase('marquee', marqueeData);
+  showToast('Marquee Stack berhasil diperbarui!', 'success');
+}
+
+/* ---------- PROJECTS GRID CRUD ---------- */
+function renderProjectsGrid() {
+  const grid = document.getElementById('projectsGrid');
+  const projects = cmsData.projects || [];
+  document.getElementById('statProjectsCount').textContent = projects.length;
+
+  grid.innerHTML = '';
+  projects.forEach((item, index) => {
+    const tagsHtml = (Array.isArray(item.tags) ? item.tags : (item.tags || '').split(','))
+      .map(t => `<span class="tag-item">${t.trim()}</span>`).join('');
+    
+    const isWarn = (item.status || '').includes('PROGRESS') || (item.status || '').includes('MAINTENANCE');
+    const badgeClass = isWarn ? 'status-warn' : 'status-ok';
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div>
+        <div class="card-head">
+          <span class="card-num">PROJECT / 0${index + 1}</span>
+          <span class="status-tag ${badgeClass}">${item.status || 'DEPLOYED'}</span>
+        </div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.description)}</p>
+        <div class="tag-list">${tagsHtml}</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editProject(${item.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProject(${item.id})">Hapus</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openProjectModal(isEdit = false) {
+  if (!isEdit) {
+    document.getElementById('projectForm').reset();
+    document.getElementById('projectId').value = '';
+    document.getElementById('modalProjectTitle').textContent = 'Tambah Project Baru';
+  }
+  document.getElementById('projectModal').classList.add('open');
+}
+function closeProjectModal() { document.getElementById('projectModal').classList.remove('open'); }
+
+function editProject(id) {
+  const p = cmsData.projects.find(item => item.id === id);
+  if (!p) return;
+  document.getElementById('projectId').value = p.id;
+  document.getElementById('pTitle').value = p.title;
+  document.getElementById('pDesc').value = p.description;
+  document.getElementById('pTags').value = Array.isArray(p.tags) ? p.tags.join(', ') : p.tags;
+  document.getElementById('pStatus').value = p.status;
+  document.getElementById('pTagCode').value = p.tag_code || './project-01';
+  document.getElementById('modalProjectTitle').textContent = 'Edit Data Project';
+  openProjectModal(true);
+}
+
+async function saveProject(e) {
+  e.preventDefault();
+  const id = document.getElementById('projectId').value;
+  const title = document.getElementById('pTitle').value;
+  const description = document.getElementById('pDesc').value;
+  const tagsStr = document.getElementById('pTags').value;
+  const tags = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
+  const status = document.getElementById('pStatus').value;
+  const tag_code = document.getElementById('pTagCode').value;
+
+  const payload = { title, description, tags, status, tag_code };
+
+  if (id) {
+    const idx = cmsData.projects.findIndex(item => item.id == id);
+    if (idx !== -1) cmsData.projects[idx] = { id: Number(id), ...payload };
+  } else {
+    cmsData.projects.push({ id: Date.now(), ...payload });
+  }
+
+  await saveSettingToSupabase('projects', cmsData.projects);
+  showToast('Data project berhasil disimpan!', 'success');
+  closeProjectModal();
+  renderProjectsGrid();
+}
+
+async function deleteProject(id) {
+  if (!confirm('Apakah Anda yakin ingin menghapus project ini?')) return;
+  cmsData.projects = cmsData.projects.filter(item => item.id !== id);
+  await saveSettingToSupabase('projects', cmsData.projects);
+  showToast('Project berhasil dihapus', 'error');
+  renderProjectsGrid();
+}
+
+/* ---------- TIMELINE GRID CRUD ---------- */
+function renderTimelineGrid() {
+  const grid = document.getElementById('timelineGrid');
+  const timeline = cmsData.timeline || [];
+  document.getElementById('statTimelineCount').textContent = timeline.length;
+  
+  grid.innerHTML = '';
+  timeline.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div>
+        <div class="card-head">
+          <span class="card-num">${item.year}</span>
+          <span class="tag-item">${item.date}</span>
+        </div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <span style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);display:block;margin-bottom:8px;">${escapeHtml(item.role)}</span>
+        <p>${escapeHtml(item.desc)}</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editTimeline(${item.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTimeline(${item.id})">Hapus</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openTimelineModal(isEdit = false) {
+  if (!isEdit) {
+    document.getElementById('timelineForm').reset();
+    document.getElementById('tId').value = '';
+    document.getElementById('modalTimelineTitle').textContent = 'Tambah Timeline Baru';
+  }
+  document.getElementById('timelineModal').classList.add('open');
+}
+function closeTimelineModal() { document.getElementById('timelineModal').classList.remove('open'); }
+
+function editTimeline(id) {
+  const t = cmsData.timeline.find(item => item.id === id);
+  if (!t) return;
+  document.getElementById('tId').value = t.id;
+  document.getElementById('tYear').value = t.year;
+  document.getElementById('tTitle').value = t.title;
+  document.getElementById('tRole').value = t.role;
+  document.getElementById('tDesc').value = t.desc;
+  document.getElementById('tDate').value = t.date;
+  document.getElementById('modalTimelineTitle').textContent = 'Edit Item Timeline';
+  openTimelineModal(true);
+}
+
+async function saveTimeline(e) {
+  e.preventDefault();
+  const id = document.getElementById('tId').value;
+  const year = document.getElementById('tYear').value;
+  const title = document.getElementById('tTitle').value;
+  const role = document.getElementById('tRole').value;
+  const desc = document.getElementById('tDesc').value;
+  const date = document.getElementById('tDate').value;
+
+  const payload = { year, title, role, desc, date };
+
+  if (id) {
+    const idx = cmsData.timeline.findIndex(item => item.id == id);
+    if (idx !== -1) cmsData.timeline[idx] = { id: Number(id), ...payload };
+  } else {
+    cmsData.timeline.push({ id: Date.now(), ...payload });
+  }
+
+  await saveSettingToSupabase('timeline', cmsData.timeline);
+  showToast('Timeline berhasil disimpan!', 'success');
+  closeTimelineModal();
+  renderTimelineGrid();
+}
+
+async function deleteTimeline(id) {
+  if (!confirm('Hapus item timeline ini?')) return;
+  cmsData.timeline = cmsData.timeline.filter(item => item.id !== id);
+  await saveSettingToSupabase('timeline', cmsData.timeline);
+  showToast('Timeline dihapus', 'error');
+  renderTimelineGrid();
+}
+
+/* ---------- SKILLS GRID CRUD ---------- */
+function renderSkillsGrid() {
+  const grid = document.getElementById('skillsGrid');
+  const skills = cmsData.skills || [];
+  
+  grid.innerHTML = '';
+  skills.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    const listHtml = item.list.map(l => `<span class="tag-item">${escapeHtml(l)}</span>`).join(' ');
+    card.innerHTML = `
+      <div>
+        <div class="card-head">
+          <span class="card-num">${escapeHtml(item.num)}</span>
+        </div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">${listHtml}</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editSkill(${item.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSkill(${item.id})">Hapus</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openSkillModal(isEdit = false) {
+  if (!isEdit) {
+    document.getElementById('skillsForm').reset();
+    document.getElementById('sId').value = '';
+    document.getElementById('modalSkillTitle').textContent = 'Tambah Kategori Skill';
+  }
+  document.getElementById('skillsModal').classList.add('open');
+}
+function closeSkillModal() { document.getElementById('skillsModal').classList.remove('open'); }
+
+function editSkill(id) {
+  const s = cmsData.skills.find(item => item.id === id);
+  if (!s) return;
+  document.getElementById('sId').value = s.id;
+  document.getElementById('sNum').value = s.num;
+  document.getElementById('sCategory').value = s.title;
+  document.getElementById('sList').value = Array.isArray(s.list) ? s.list.join(', ') : s.list;
+  document.getElementById('modalSkillTitle').textContent = 'Edit Skill Card';
+  openSkillModal(true);
+}
+
+async function saveSkill(e) {
+  e.preventDefault();
+  const id = document.getElementById('sId').value;
+  const num = document.getElementById('sNum').value;
+  const title = document.getElementById('sCategory').value;
+  const rawList = document.getElementById('sList').value;
+  const list = rawList.split(',').map(s => s.trim()).filter(Boolean);
+
+  const payload = { num, title, list };
+
+  if (id) {
+    const idx = cmsData.skills.findIndex(item => item.id == id);
+    if (idx !== -1) cmsData.skills[idx] = { id: Number(id), ...payload };
+  } else {
+    cmsData.skills.push({ id: Date.now(), ...payload });
+  }
+
+  await saveSettingToSupabase('skills', cmsData.skills);
+  showToast('Skill card berhasil disimpan!', 'success');
+  closeSkillModal();
+  renderSkillsGrid();
+}
+
+async function deleteSkill(id) {
+  if (!confirm('Hapus kategori skill ini?')) return;
+  cmsData.skills = cmsData.skills.filter(item => item.id !== id);
+  await saveSettingToSupabase('skills', cmsData.skills);
+  showToast('Skill dihapus', 'error');
+  renderSkillsGrid();
+}
+
+/* ---------- UI HELPERS ---------- */
+function switchTab(panelId, btnEl) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  btnEl.classList.add('active');
+}
+
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function setupCustomCursor() {
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if(!dot || !ring) return;
+  let mx=0, my=0, rx=0, ry=0;
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+  }, {passive:true});
+
+  if (typeof gsap !== 'undefined') {
+    gsap.ticker.add(() => {
+      rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+    });
+  }
+
+  document.querySelectorAll('button, input, select, textarea, a').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+}
+</script>
+</body>
+</html>

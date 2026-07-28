@@ -124,30 +124,35 @@ section{position:relative;z-index:2;contain:paint;scroll-margin-top:90px;}
 
 /* ---------- nav ---------- */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
+  position:fixed;top:0;left:0;right:0;z-index:300;
   display:flex;align-items:center;justify-content:space-between;
-  padding:22px max(40px, env(safe-area-inset-right)) 22px max(40px, env(safe-area-inset-left));
-  background:rgba(5,8,16,0.88);
+  padding:12px max(40px, env(safe-area-inset-right)) 12px max(40px, env(safe-area-inset-left));
+  background:rgba(5,8,16,0.85);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid transparent;
-  transition:border-color .3s ease, background .3s ease;
+  transition:all .3s ease;
   will-change:transform;
 }
-nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
-@media (max-width:1024px){ nav{padding-left:28px;padding-right:28px;} .nav-links{gap:22px;} }
-@media (max-width:640px){ nav{padding:16px 20px;padding-left:max(20px, env(safe-area-inset-left));padding-right:max(20px, env(safe-area-inset-right));} }
-@media (max-width:380px){ nav{padding:14px 16px;} }
+nav.scrolled{
+  padding-top:10px;padding-bottom:10px;
+  border-color:var(--line);background:rgba(5,8,16,0.95);
+  box-shadow:0 10px 30px -10px rgba(0,0,0,0.5);
+}
+@media (max-width:1024px){ nav{padding-left:24px;padding-right:24px;} .nav-links{gap:22px;} }
+@media (max-width:860px){ nav{padding:12px 20px;} }
+@media (max-width:380px){ nav{padding:10px 14px;} }
 
 .logo{
-  font-family:var(--ff-mono);font-size:0.95rem;color:var(--ink);
+  font-family:var(--ff-mono);font-size:0.88rem;color:var(--ink);
   display:flex;align-items:center;gap:8px;letter-spacing:0.02em;
-  position:relative;z-index:210;white-space:nowrap;
+  position:relative;z-index:310;white-space:nowrap;
 }
-@media (max-width:380px){ .logo{font-size:0.82rem;} }
-.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);flex:none;}
-.nav-links{display:flex;gap:36px;list-style:none;}
+@media (max-width:380px){ .logo{font-size:0.8rem;} }
+.logo .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok);flex:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{
-  font-family:var(--ff-mono);font-size:0.82rem;color:var(--ink-dim);
-  text-decoration:none;position:relative;padding:4px 0;transition:color .25s ease;
+  font-family:var(--ff-mono);font-size:0.78rem;color:var(--ink-dim);
+  text-decoration:none;position:relative;padding:3px 0;transition:color .25s ease;
 }
 .nav-links a::after{
   content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--accent-2);
@@ -156,8 +161,8 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
 .nav-links a:hover{color:var(--ink);}
 .nav-links a:hover::after{width:100%;}
 .nav-cta{
-  font-family:var(--ff-mono);font-size:0.8rem;color:var(--bg);
-  background:var(--ink);padding:9px 18px;border-radius:100px;text-decoration:none;
+  font-family:var(--ff-mono);font-size:0.76rem;color:var(--bg);
+  background:var(--ink);padding:7px 16px;border-radius:100px;text-decoration:none;
   transition:background .25s ease, transform .25s ease;
   white-space:nowrap;
 }
@@ -168,7 +173,7 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
   display:none;flex-direction:column;justify-content:center;align-items:flex-end;gap:5px;
   cursor:pointer;background:none;border:none;padding:11px;margin:-11px;
   min-width:44px;min-height:44px;
-  position:relative;z-index:210;
+  position:relative;z-index:320;
 }
 .burger span{width:22px;height:2px;background:var(--ink);transition:transform .3s ease, opacity .3s ease;}
 .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
@@ -178,7 +183,7 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
 .mobile-menu{
   position:fixed;inset:0;z-index:200;
   background:rgba(5,8,16,0.98);
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
   opacity:0;visibility:hidden;transform:translateY(-12px);
   transition:opacity .35s ease, transform .35s ease, visibility 0s linear .35s;
@@ -232,8 +237,8 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
 .hero-video-overlay{
   position:absolute;
   inset:0;
-  background:radial-gradient(ellipse at center, rgba(5,8,16,0.4) 0%, rgba(5,8,16,0.85) 75%, var(--bg) 100%),
-             linear-gradient(180deg, rgba(5,8,16,0.65) 0%, rgba(5,8,16,0.85) 65%, var(--bg) 100%);
+  background:radial-gradient(ellipse at center, rgba(5,8,16,0.15) 0%, rgba(5,8,16,0.6) 75%, var(--bg) 100%),
+             linear-gradient(180deg, rgba(5,8,16,0.4) 0%, rgba(5,8,16,0.68) 70%, var(--bg) 100%);
   z-index:1;
   pointer-events:none;
 }
@@ -332,10 +337,27 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
 }
 .scroll-cue .arrow{animation:down 1.6s ease-in-out infinite;}
 @keyframes down{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
-.hero-meta{display:flex;gap:36px;flex-wrap:wrap;}
-@media (max-width:520px){ .hero-meta{gap:22px 28px;} }
-.hero-meta div{font-family:var(--ff-mono);font-size:0.78rem;color:var(--ink-faint);}
-.hero-meta strong{display:block;color:var(--ink);font-family:var(--ff-body);font-size:0.95rem;font-weight:600;}
+/* Hero Floating Meta Pills (Compact & Refined) */
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.hero-meta div{
+  font-family:var(--ff-mono);font-size:0.75rem;color:var(--ink-dim);
+  background:rgba(14,24,48,0.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(138,180,255,0.18);
+  padding:6px 14px;border-radius:100px;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .3s ease;
+}
+.hero-meta div:hover{
+  border-color:var(--accent-2);
+  background:rgba(76,124,255,0.15);
+  transform:translateY(-2px);
+  box-shadow:0 6px 18px -6px rgba(76,124,255,0.3);
+}
+.hero-meta strong{
+  color:#fff;font-family:var(--ff-display);font-size:0.92rem;font-weight:700;
+  background:linear-gradient(135deg, #fff, var(--accent-2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
 
 /* ---------- marquee ---------- */
 .marquee-wrap{
@@ -357,31 +379,92 @@ nav.scrolled{border-color:var(--line);background:rgba(5,8,16,0.96);}
 @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* ---------- section heading ---------- */
-.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:20px;}
-@media (max-width:640px){ .sec-head{margin-bottom:38px;} }
-.sec-title{font-family:var(--ff-display);font-weight:700;font-size:clamp(1.9rem,7vw,3.2rem);letter-spacing:-0.01em;}
-.sec-note{font-family:var(--ff-mono);font-size:0.82rem;color:var(--ink-faint);max-width:280px;text-align:right;}
-@media (max-width:640px){ .sec-note{text-align:left;max-width:100%;} }
-
-section.section-pad{padding:130px 0;}
-@media (max-width:860px){ section.section-pad{padding:100px 0;} }
-@media (max-width:640px){ section.section-pad{padding:80px 0;} }
-
-/* ---------- about ---------- */
-.about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:70px;}
-@media (max-width:860px){ .about-grid{grid-template-columns:1fr;gap:40px;} }
-.about-text p{color:var(--ink-dim);font-size:1.05rem;line-height:1.85;margin-bottom:20px;}
-.about-text strong{color:var(--ink);font-weight:600;}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-@media (max-width:420px){ .stat-grid{grid-template-columns:1fr 1fr;} }
-.stat{background:var(--panel);padding:28px 24px;}
-@media (max-width:640px){ .stat{padding:22px 18px;} }
-.stat b{
-  display:block;font-family:var(--ff-display);font-size:clamp(1.8rem,5vw,2.4rem);font-weight:700;color:var(--ink);
-  background:linear-gradient(180deg, var(--ink), var(--accent-2));
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+.sec-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:44px;flex-wrap:wrap;gap:24px;
 }
-.stat span{font-family:var(--ff-mono);font-size:0.72rem;color:var(--ink-faint);}
+@media (max-width:640px){ .sec-head{margin-bottom:32px;} }
+.sec-title{
+  font-family:var(--ff-display);font-weight:700;
+  font-size:clamp(1.8rem,5.5vw,2.8rem);line-height:1.15;letter-spacing:-0.01em;
+}
+.sec-note{
+  font-family:var(--ff-mono);font-size:0.85rem;color:var(--ink-dim);
+  line-height:1.6;max-width:340px;text-align:right;
+}
+@media (max-width:860px){ .sec-note{text-align:left;max-width:100%;} }
+
+section.section-pad{padding:110px 0;}
+@media (max-width:860px){ section.section-pad{padding:80px 0;} }
+@media (max-width:640px){ section.section-pad{padding:64px 0;} }
+
+/* ---------- balanced about section & stats ---------- */
+.about-grid{
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;
+  align-items:start;
+}
+@media (max-width:860px){ .about-grid{grid-template-columns:1fr;gap:32px;} }
+
+.about-text{
+  display:flex;flex-direction:column;gap:14px;
+}
+.about-text p{
+  color:var(--ink-dim);font-size:0.98rem;line-height:1.75;margin-bottom:0;
+}
+.about-text p:first-of-type{
+  font-size:1.06rem;color:var(--ink);line-height:1.7;
+}
+.about-text strong{color:var(--ink);font-weight:600;}
+
+.stat-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  background:transparent;border:none;border-radius:0;overflow:visible;
+  align-content:start;
+}
+@media (max-width:480px){ .stat-grid{grid-template-columns:1fr 1fr;} }
+
+.stat{
+  background:rgba(14,24,48,0.5);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(138,180,255,0.18);
+  border-radius:18px;
+  padding:20px 22px;
+  position:relative;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:96px;
+  transition:all .3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow:0 8px 24px -10px rgba(0,0,0,0.4);
+}
+.stat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent-2), transparent);
+  opacity:0;transition:opacity .3s ease;
+}
+.stat:hover{
+  transform:translateY(-4px);
+  background:rgba(14,24,48,0.8);
+  border-color:var(--accent-2);
+  box-shadow:0 14px 30px -8px rgba(76,124,255,0.3);
+}
+.stat:hover::before{opacity:1;}
+
+.stat b{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--ff-display);font-size:clamp(1.5rem,2.8vw,1.85rem);font-weight:700;
+  color:#fff;
+  background:linear-gradient(135deg, #ffffff 30%, var(--accent-2) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:4px;line-height:1.2;
+}
+.stat span{
+  font-family:var(--ff-mono);font-size:0.72rem;color:var(--ink-dim);
+  letter-spacing:0.02em;display:flex;align-items:center;gap:6px;
+}
+.stat span::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--ok);box-shadow:0 0 6px var(--ok);display:inline-block;flex:none;
+}
 
 /* ---------- skills ---------- */
 .skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
@@ -611,7 +694,6 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
         <div class="eyebrow">01 / ABOUT</div>
         <h2 class="sec-title">Berpikir seperti analis,<br>membangun seperti developer.</h2>
       </div>
-      <div class="sec-note">Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode.</div>
     </div>
 
     <div class="about-grid">
@@ -798,11 +880,11 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
 <section id="contact" class="contact wrap">
   <div class="eyebrow">05 / CONTACT</div>
   <h2>Mari bangun sesuatu <span>bersama.</span></h2>
-  <a href="mailto:hello@placeholder.dev" class="magnetic-btn" id="magnetBtn">hello@placeholder.dev ↗</a>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=hello@mariaboro.my.id" target="_blank" rel="noopener noreferrer" class="magnetic-btn" id="magnetBtn">hello@mariaboro.my.id ↗</a>
   <div class="contact-links">
-    <a href="#">GitHub</a>
-    <a href="#">LinkedIn</a>
-    <a href="#">Instagram</a>
+    <a href="https://github.com/mariaboro" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://www.linkedin.com/in/mariaboro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="https://www.instagram.com/mariaboro_/" target="_blank" rel="noopener noreferrer">Instagram</a>
     <a href="#">CV / Resume</a>
   </div>
 </section>
@@ -915,23 +997,46 @@ document.addEventListener('DOMContentLoaded', () => {
     .from('.hero-bottom', {opacity:0, y:20, duration:0.6}, '-=0.3');
 
   /* ---------- GSAP Typed Terminal ---------- */
-  const termBody = document.getElementById('termBody');
-  if (termBody) {
+  window.renderTerminal = function(customText) {
+    const termBody = document.getElementById('termBody');
+    if (!termBody) return;
     termBody.innerHTML = '';
     const cursorSpan = document.createElement('span');
     cursorSpan.className = 'cursor-blink';
 
+    const textToUse = customText || window.customTerminalLines;
+
+    let termLines = [];
+    if (textToUse) {
+      const rawLines = typeof textToUse === 'string' ? textToUse.split('\n') : textToUse;
+      termLines = rawLines.map(line => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('$')) return { type: 'prompt', text: trimmed };
+        if (trimmed.includes('[OK]') || trimmed.includes('passed') || trimmed.includes('OK')) return { type: 'ok', text: trimmed };
+        return { type: 'out', text: trimmed };
+      }).filter(l => l.text.length > 0);
+    } else {
+      termLines = [
+        { type: 'prompt', text: '$ whoami' },
+        { type: 'out', text: '> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst' },
+        { type: 'prompt', text: '$ status --check' },
+        { type: 'ok', text: '> [OK] Available for full-stack & analyst roles' },
+        { type: 'prompt', text: '$ run tests --all' },
+        { type: 'ok', text: '> 42 passed, 0 failed [100% test coverage]' }
+      ];
+    }
+
+    if (typeof gsap === 'undefined') {
+      termLines.forEach(l => {
+        const d = document.createElement('div');
+        d.className = l.type;
+        d.textContent = l.text;
+        termBody.appendChild(d);
+      });
+      return;
+    }
+
     const termTl = gsap.timeline({ delay: 0.8 });
-
-    const termLines = [
-      { type: 'prompt', text: '$ whoami' },
-      { type: 'out', text: '> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst' },
-      { type: 'prompt', text: '$ status --check' },
-      { type: 'ok', text: '> [OK] Available for full-stack & analyst roles' },
-      { type: 'prompt', text: '$ run tests --all' },
-      { type: 'ok', text: '> 42 passed, 0 failed [100% test coverage]' }
-    ];
-
     termLines.forEach((l) => {
       const lineEl = document.createElement('div');
       lineEl.className = l.type;
@@ -955,7 +1060,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeLine = termBody.lastElementChild;
       if (activeLine) activeLine.appendChild(cursorSpan);
     });
-  }
+  };
+
+  window.renderTerminal();
 
   /* ---------- GSAP 3D Interactive Tilt ---------- */
   document.querySelectorAll('.terminal, .skill-card, .stat').forEach(card => {
@@ -1042,30 +1149,202 @@ function setupMobileMenu(){
   window.addEventListener('resize', ()=>{ if(window.innerWidth > 860) closeMenu(); });
 }
 
-async function loadProjects() {
-  // Ambil semua data dari tabel 'projects'
-  const { data, error } = await supabase
-    .from('projects')
-    .select('*');
+async function loadFullCMSContent() {
+  let cmsData = null;
 
-  if (error) {
-    console.error('Error mengambil data:', error.message);
-    return;
+  // 1. Coba ambil dari Supabase site_settings jika terhubung
+  if (typeof supabase !== 'undefined') {
+    try {
+      const { data } = await supabase.from('site_settings').select('*');
+      if (data && data.length > 0) {
+        cmsData = {};
+        data.forEach(row => { cmsData[row.id] = row.data; });
+      }
+    } catch (e) {
+      console.log('Supabase read error, fallback ke LocalStorage');
+    }
   }
 
-  console.log('Data project dari Supabase:', data);
-  // Selanjutnya Anda tinggal render 'data' ini ke dalam DOM HTML!
+  // 2. Fallback ke LocalStorage (dari Admin Dashboard) jika tidak ada dari Supabase
+  if (!cmsData) {
+    const saved = localStorage.getItem('porto_cms_data');
+    if (saved) {
+      try { cmsData = JSON.parse(saved); } catch(e){}
+    }
+  }
+
+  if (!cmsData) return; // Menggunakan static HTML default jika tidak ada data CMS
+
+  // A. Render Hero Section
+  if (cmsData.hero) {
+    const h = cmsData.hero;
+    const nameLines = document.querySelectorAll('.hero-name .line span');
+    if (nameLines[0] && h.firstName) nameLines[0].textContent = h.firstName;
+    if (nameLines[1] && h.lastName) nameLines[1].textContent = h.lastName;
+    
+    const roleEl = document.querySelector('.hero-role');
+    if (roleEl && h.role) roleEl.textContent = h.role;
+
+    const descEl = document.querySelector('.hero-desc');
+    if (descEl && h.desc) descEl.textContent = h.desc;
+
+    const metaDivs = document.querySelectorAll('.hero-meta div');
+    if (metaDivs[0] && h.expYears) metaDivs[0].innerHTML = `<strong>${h.expYears.split(' ')[0]}</strong> ${h.expYears.split(' ').slice(1).join(' ')}`;
+    if (metaDivs[1] && h.projectsCount) metaDivs[1].innerHTML = `<strong>${h.projectsCount.split(' ')[0]}</strong> ${h.projectsCount.split(' ').slice(1).join(' ')}`;
+    if (metaDivs[2] && h.location) metaDivs[2].innerHTML = `<strong>${h.location.split(' ')[0]}</strong> ${h.location.split(' ').slice(1).join(' ')}`;
+
+    if (h.terminalLines) {
+      window.customTerminalLines = h.terminalLines;
+      if (typeof window.renderTerminal === 'function') {
+        window.renderTerminal(h.terminalLines);
+      }
+    }
+  }
+
+  // B. Render Marquee
+  if (cmsData.marquee && Array.isArray(cmsData.marquee)) {
+    const marqueeEl = document.querySelector('.marquee');
+    if (marqueeEl) {
+      const itemsHtml = cmsData.marquee.map(item => `<span><b>${item}</b></span>`).join('');
+      // Duplicate for smooth continuous marquee
+      marqueeEl.innerHTML = itemsHtml + itemsHtml;
+    }
+  }
+
+  // C. Render About Section
+  if (cmsData.about) {
+    const a = cmsData.about;
+    const secTitle = document.querySelector('#about .sec-title');
+    if (secTitle && a.title) secTitle.innerHTML = a.title.replace(/\./g, '.<br>');
+
+    const secNote = document.querySelector('#about .sec-note');
+    if (secNote && a.note) secNote.textContent = a.note;
+
+    const aboutText = document.querySelector('.about-text');
+    if (aboutText && a.p1) {
+      aboutText.innerHTML = `
+        <p>${a.p1}</p>
+        <p>${a.p2 || ''}</p>
+        <p>${a.p3 || ''}</p>
+      `;
+    }
+
+    if (a.stats && Array.isArray(a.stats)) {
+      const statGrid = document.querySelector('.stat-grid');
+      if (statGrid) {
+        statGrid.innerHTML = a.stats.map(s => `
+          <div class="stat"><b>${s.val}</b><span>${s.lbl}</span></div>
+        `).join('');
+      }
+    }
+  }
+
+  // D. Render Projects Section
+  if (cmsData.projects && Array.isArray(cmsData.projects) && cmsData.projects.length > 0) {
+    const pContainer = document.querySelector('.project-list');
+    if (pContainer) {
+      pContainer.innerHTML = '';
+      cmsData.projects.forEach((p, idx) => {
+        const num = (idx + 1).toString().padStart(2, '0');
+        const tags = Array.isArray(p.tags) ? p.tags : (p.tags || '').split(',').map(t => t.trim());
+        const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
+        const isWarn = (p.status || '').includes('PROGRESS') || (p.status || '').includes('MAINTENANCE');
+        const badgeClass = isWarn ? 'status-badge warn' : 'status-badge';
+
+        const projEl = document.createElement('div');
+        projEl.className = 'project reveal';
+        projEl.style.opacity = '1';
+        projEl.style.transform = 'none';
+        projEl.innerHTML = `
+          <div class="project-info">
+            <div class="p-index">PROJECT / ${num}</div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div class="tag-row">${tagsHtml}</div>
+            <span class="${badgeClass}">STATUS: ${p.status || 'DEPLOYED & PASSED QA'}</span>
+          </div>
+          <div class="project-visual" data-tag="${p.tag_code || './project-' + num}">
+            <div class="grid-lines"></div><div class="glow"></div>
+            <span class="glyph">${num}</span>
+          </div>
+        `;
+        pContainer.appendChild(projEl);
+      });
+    }
+  }
+
+  // E. Render Timeline Section
+  if (cmsData.timeline && Array.isArray(cmsData.timeline) && cmsData.timeline.length > 0) {
+    const tContainer = document.querySelector('.timeline');
+    if (tContainer) {
+      tContainer.innerHTML = '';
+      cmsData.timeline.forEach(item => {
+        const tEl = document.createElement('div');
+        tEl.className = 't-item reveal';
+        tEl.style.opacity = '1';
+        tEl.style.transform = 'none';
+        tEl.innerHTML = `
+          <div class="t-num">${item.year}</div>
+          <div class="t-main">
+            <h3>${item.title}</h3>
+            <span class="t-role">${item.role}</span>
+            <p>${item.desc}</p>
+          </div>
+          <div class="t-date">${item.date}</div>
+        `;
+        tContainer.appendChild(tEl);
+      });
+    }
+  }
+
+  // F. Render Skills Section
+  if (cmsData.skills && Array.isArray(cmsData.skills) && cmsData.skills.length > 0) {
+    const sContainer = document.querySelector('.skills-grid');
+    if (sContainer) {
+      sContainer.innerHTML = '';
+      cmsData.skills.forEach(s => {
+        const listHtml = (Array.isArray(s.list) ? s.list : (s.list || '').split(','))
+          .map(l => `<li>${l.trim()}</li>`).join('');
+        const sEl = document.createElement('div');
+        sEl.className = 'skill-card';
+        sEl.innerHTML = `
+          <span class="num">${s.num}</span>
+          <h3>${s.title}</h3>
+          <ul>${listHtml}</ul>
+        `;
+        sContainer.appendChild(sEl);
+      });
+    }
+  }
+
+  // G. Render Contact & Footer Section
+  if (cmsData.contact) {
+    const c = cmsData.contact;
+    const cTitle = document.querySelector('#contact h2');
+    if (cTitle && c.title) cTitle.innerHTML = c.title;
+
+    const magnetBtn = document.getElementById('magnetBtn');
+    if (magnetBtn && c.email) {
+      magnetBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${c.email}`;
+      magnetBtn.textContent = `${c.email} ↗`;
+    }
+
+    const contactLinks = document.querySelector('.contact-links');
+    if (contactLinks) {
+      contactLinks.innerHTML = `
+        <a href="${c.github || '#'}" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="${c.linkedin || '#'}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="${c.instagram || '#'}" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="${c.cv || '#'}">CV / Resume</a>
+      `;
+    }
+
+    const footerText = document.querySelector('footer p');
+    if (footerText && c.footerText) footerText.textContent = c.footerText;
+  }
 }
 
-loadProjects();
-
-async function loginAdmin(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password,
-  });
-  if (data.session) alert('Berhasil Login Admin!');
-}
+loadFullCMSContent();
 
 </script>
 </body>
