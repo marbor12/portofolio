@@ -808,8 +808,24 @@ CREATE POLICY "Admin Modify Access Projects" ON projects FOR ALL USING (auth.rol
         <input type="text" id="tRole" class="form-control" placeholder="Self-employed" required>
       </div>
       <div class="form-group">
+        <label for="tBadge">Badge Highlight / Tag (Opsional)</label>
+        <input type="text" id="tBadge" class="form-control" placeholder="Contoh: ⚡ 30+ Events Executed">
+      </div>
+      <div class="form-group">
         <label for="tDesc">Deskripsi Tugas</label>
         <textarea id="tDesc" class="form-control" placeholder="Menulis test case, perancangan sistem..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Foto / Dokumentasi Media (Gaya LinkedIn)</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input type="file" id="tImageFile" accept="image/*" multiple class="form-control" onchange="handleTimelineImageUpload(event)">
+          <span style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--ink-faint);">Atau Masukkan URL Foto lalu tekan Tambah:</span>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="tImageUrlInput" class="form-control" placeholder="https://domain.com/foto.jpg">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addTimelineUrlImage()" style="white-space:nowrap;">+ Tambah URL</button>
+          </div>
+        </div>
+        <div id="tImagePreviewBox" style="margin-top:12px;display:none;flex-wrap:wrap;gap:10px;"></div>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
         <button type="button" class="btn btn-secondary" onclick="closeTimelineModal()">Batal</button>
@@ -894,9 +910,9 @@ const defaultData = {
     { id: 3, title: 'Automation Test Suite Placeholder', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
   ],
   timeline: [
-    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
-    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
-    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
+    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
   ],
   skills: [
     { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
@@ -922,7 +938,49 @@ function getLocalData() {
 }
 
 function saveLocalData(data) {
-  localStorage.setItem('porto_cms_data', JSON.stringify(data));
+  try {
+    localStorage.setItem('porto_cms_data', JSON.stringify(data));
+  } catch (e) {
+    console.warn('LocalStorage quota exceeded:', e);
+    showToast('⚠️ Kapasitas browser (LocalStorage) penuh. Coba kurangi foto atau gunakan URL foto.', 'error');
+  }
+}
+
+function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = () => resolve(event.target.result);
+    };
+    reader.onerror = (err) => reject(err);
+  });
 }
 
 let cmsData = getLocalData();
@@ -1191,18 +1249,18 @@ function updateImagePreview(url) {
   }
 }
 
-function handleImageUpload(e) {
+async function handleImageUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    const base64Str = evt.target.result;
-    document.getElementById('pImage').value = base64Str;
-    updateImagePreview(base64Str);
-    showToast('Gambar berhasil diupload!', 'success');
-  };
-  reader.readAsDataURL(file);
+  try {
+    const compressedStr = await compressImage(file, 1000, 1000, 0.75);
+    document.getElementById('pImage').value = compressedStr;
+    updateImagePreview(compressedStr);
+    showToast('Gambar berhasil diupload & dikompresi!', 'success');
+  } catch (err) {
+    showToast('Gagal memproses gambar.', 'error');
+  }
 }
 
 function openProjectModal(isEdit = false) {
@@ -1265,6 +1323,83 @@ async function deleteProject(id) {
   renderProjectsGrid();
 }
 
+let currentTimelineImages = [];
+
+function updateTimelineImagePreview() {
+  const box = document.getElementById('tImagePreviewBox');
+  if (!box) return;
+  box.innerHTML = '';
+  if (!currentTimelineImages || currentTimelineImages.length === 0) {
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = 'flex';
+  currentTimelineImages.forEach((imgObj, idx) => {
+    const url = typeof imgObj === 'object' ? (imgObj.url || '') : imgObj;
+    const title = typeof imgObj === 'object' ? (imgObj.title || '') : '';
+    const desc = typeof imgObj === 'object' ? (imgObj.desc || '') : '';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;display:flex;flex-direction:column;gap:4px;background:var(--panel-2);border:1px solid var(--line-strong);padding:8px;border-radius:8px;width:190px;';
+
+    wrap.innerHTML = `
+      <div style="position:relative;width:100%;height:85px;border-radius:6px;overflow:hidden;">
+        <img src="${escapeHtml(url)}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <button type="button" onclick="removeTimelineImage(${idx})" style="position:absolute;top:4px;right:4px;background:var(--danger,#ff4d4d);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.5);z-index:5;">&times;</button>
+      </div>
+      <input type="text" placeholder="Judul Foto (Opsional)" value="${escapeHtml(title)}" oninput="updateTimelineImageMeta(${idx}, 'title', this.value)" class="form-control" style="font-size:0.72rem;padding:4px 8px;margin-top:2px;">
+      <input type="text" placeholder="Keterangan Foto (Opsional)" value="${escapeHtml(desc)}" oninput="updateTimelineImageMeta(${idx}, 'desc', this.value)" class="form-control" style="font-size:0.72rem;padding:4px 8px;">
+    `;
+
+    box.appendChild(wrap);
+  });
+}
+
+function updateTimelineImageMeta(index, field, value) {
+  if (!currentTimelineImages[index]) return;
+  if (typeof currentTimelineImages[index] === 'string') {
+    currentTimelineImages[index] = { url: currentTimelineImages[index], title: '', desc: '' };
+  }
+  currentTimelineImages[index][field] = value;
+}
+
+function removeTimelineImage(index) {
+  currentTimelineImages.splice(index, 1);
+  updateTimelineImagePreview();
+}
+
+function addTimelineUrlImage() {
+  const input = document.getElementById('tImageUrlInput');
+  if (!input) return;
+  const url = input.value.trim();
+  if (url) {
+    currentTimelineImages.push({ url, title: '', desc: '' });
+    input.value = '';
+    updateTimelineImagePreview();
+    showToast('Foto URL berhasil ditambahkan!', 'success');
+  }
+}
+
+async function handleTimelineImageUpload(e) {
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  showToast(`Mekompresi & memproses ${files.length} foto...`, 'success');
+
+  try {
+    const filePromises = Array.from(files).map(file => compressImage(file, 800, 800, 0.72));
+    const base64Results = await Promise.all(filePromises);
+    const newItems = base64Results.map(url => ({ url, title: '', desc: '' }));
+    currentTimelineImages.push(...newItems);
+    updateTimelineImagePreview();
+    showToast(`Berhasil menambahkan ${files.length} foto!`, 'success');
+    e.target.value = '';
+  } catch (err) {
+    console.error('Error uploading timeline images:', err);
+    showToast('Gagal mengunggah beberapa file foto.', 'error');
+  }
+}
+
 /* ---------- TIMELINE GRID CRUD ---------- */
 function renderTimelineGrid() {
   const grid = document.getElementById('timelineGrid');
@@ -1280,15 +1415,27 @@ function renderTimelineGrid() {
   timeline.forEach(item => {
     const card = document.createElement('div');
     card.className = 'item-card';
+    const badgeMarkup = item.badge ? `<span class="badge-admin" style="margin-left:6px;background:rgba(76,124,255,0.15);color:var(--accent-2);">${escapeHtml(item.badge)}</span>` : '';
+    
+    let mediaPreview = '';
+    const imgList = Array.isArray(item.images) ? item.images : (item.images ? item.images.split(',') : (item.image ? [item.image] : []));
+    const validImgs = imgList.map(s => typeof s === 'object' ? (s.url || '') : (typeof s === 'string' ? s.trim() : '')).filter(Boolean);
+    if (validImgs.length > 0) {
+      mediaPreview = `<div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;">` +
+        validImgs.map(img => `<img src="${escapeHtml(img)}" style="height:45px;width:70px;object-fit:cover;border-radius:4px;border:1px solid var(--line-strong);">`).join('') +
+        `</div>`;
+    }
+
     card.innerHTML = `
       <div>
         <div class="card-head">
           <span class="card-num">${item.year}</span>
           <span class="tag-item">${item.date}</span>
         </div>
-        <h3>${escapeHtml(item.title)}</h3>
+        <h3>${escapeHtml(item.title)} ${badgeMarkup}</h3>
         <span style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);display:block;margin-bottom:8px;">${escapeHtml(item.role)}</span>
         <p>${escapeHtml(item.desc)}</p>
+        ${mediaPreview}
       </div>
       <div class="card-actions">
         <button class="btn btn-secondary btn-sm" onclick="editTimeline(${item.id})">Edit</button>
@@ -1303,6 +1450,11 @@ function openTimelineModal(isEdit = false) {
   if (!isEdit) {
     document.getElementById('timelineForm').reset();
     document.getElementById('tId').value = '';
+    document.getElementById('tBadge').value = '';
+    const urlInput = document.getElementById('tImageUrlInput');
+    if (urlInput) urlInput.value = '';
+    currentTimelineImages = [];
+    updateTimelineImagePreview();
     document.getElementById('modalTimelineTitle').textContent = 'Tambah Timeline Baru';
   }
   document.getElementById('timelineModal').classList.add('open');
@@ -1316,34 +1468,55 @@ function editTimeline(id) {
   document.getElementById('tYear').value = t.year;
   document.getElementById('tTitle').value = t.title;
   document.getElementById('tRole').value = t.role;
+  document.getElementById('tBadge').value = t.badge || '';
   document.getElementById('tDesc').value = t.desc;
   document.getElementById('tDate').value = t.date;
+
+  const rawImgs = Array.isArray(t.images) ? t.images : (t.images ? [t.images] : (t.image ? [t.image] : []));
+  currentTimelineImages = rawImgs.map(item => {
+    if (typeof item === 'object' && item !== null) {
+      return { url: item.url || '', title: item.title || '', desc: item.desc || '' };
+    }
+    return { url: String(item || ''), title: '', desc: '' };
+  }).filter(img => img.url.length > 0);
+  
+  const urlInput = document.getElementById('tImageUrlInput');
+  if (urlInput) urlInput.value = '';
+
+  updateTimelineImagePreview();
   document.getElementById('modalTimelineTitle').textContent = 'Edit Item Timeline';
   openTimelineModal(true);
 }
 
 async function saveTimeline(e) {
   e.preventDefault();
-  const id = document.getElementById('tId').value;
-  const year = document.getElementById('tYear').value;
-  const title = document.getElementById('tTitle').value;
-  const role = document.getElementById('tRole').value;
-  const desc = document.getElementById('tDesc').value;
-  const date = document.getElementById('tDate').value;
+  try {
+    const id = document.getElementById('tId').value;
+    const year = document.getElementById('tYear').value;
+    const title = document.getElementById('tTitle').value;
+    const role = document.getElementById('tRole').value;
+    const badge = document.getElementById('tBadge').value;
+    const desc = document.getElementById('tDesc').value;
+    const date = document.getElementById('tDate').value;
+    const images = [...currentTimelineImages];
 
-  const payload = { year, title, role, desc, date };
+    const payload = { year, title, role, badge, desc, date, images };
 
-  if (id) {
-    const idx = cmsData.timeline.findIndex(item => item.id == id);
-    if (idx !== -1) cmsData.timeline[idx] = { id: Number(id), ...payload };
-  } else {
-    cmsData.timeline.push({ id: Date.now(), ...payload });
+    if (id) {
+      const idx = cmsData.timeline.findIndex(item => item.id == id);
+      if (idx !== -1) cmsData.timeline[idx] = { id: Number(id), ...payload };
+    } else {
+      cmsData.timeline.push({ id: Date.now(), ...payload });
+    }
+
+    await saveSettingToSupabase('timeline', cmsData.timeline);
+    showToast('Timeline berhasil disimpan!', 'success');
+    closeTimelineModal();
+    renderTimelineGrid();
+  } catch (err) {
+    console.error('Error saving timeline:', err);
+    showToast('Gagal menyimpan timeline: ' + (err.message || err), 'error');
   }
-
-  await saveSettingToSupabase('timeline', cmsData.timeline);
-  showToast('Timeline berhasil disimpan!', 'success');
-  closeTimelineModal();
-  renderTimelineGrid();
 }
 
 async function deleteTimeline(id) {
