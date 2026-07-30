@@ -27,13 +27,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
 <!-- CDN Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  // Inisialisasi Client Supabase
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 const SUPABASE_URL = 'https://wxgoyeptaovkheekxabm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4Z295ZXB0YW92a2hlZWt4YWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNjIxNjksImV4cCI6MjEwMDczODE2OX0.I7ui9Gle5zQlItggrbMwL2ItkwfRT7KrAWRsfGy3l6w';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+var supabaseClient = null;
+if (typeof supabase !== 'undefined' && supabase.createClient) {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
 </script>
 
 
@@ -1373,9 +1375,9 @@ async function loadFullCMSContent() {
   let cmsData = null;
 
   // 1. Coba ambil dari Supabase site_settings jika terhubung
-  if (typeof supabase !== 'undefined') {
+  if (supabaseClient) {
     try {
-      const { data } = await supabase.from('site_settings').select('*');
+      const { data, error } = await supabaseClient.from('site_settings').select('*');
       if (data && data.length > 0) {
         cmsData = {};
         data.forEach(row => { cmsData[row.id] = row.data; });
