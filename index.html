@@ -1317,6 +1317,58 @@ function setupMobileMenu(){
   window.addEventListener('resize', ()=>{ if(window.innerWidth > 860) closeMenu(); });
 }
 
+const defaultData = {
+  hero: {
+    firstName: "Maria Oxtavia Laurence",
+    lastName: "Siboro",
+    role: "Full-Stack Developer — System Analyst — QA Engineer",
+    desc: "Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.",
+    expYears: "4+ years learning & building",
+    projectsCount: "12+ projects shipped",
+    location: "Bandung, ID based, open to remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+  },
+  about: {
+    title: "Berpikir seperti analis, membangun seperti developer.",
+    note: "Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode.",
+    p1: "Saya Maria Oxtavia Laurence Siboro, lulusan Sistem Informasi yang bergerak di persimpangan antara pengembangan perangkat lunak, analisis sistem, dan quality assurance.",
+    p2: "Saya percaya produk yang baik lahir dari proses yang tertata: memahami masalah, merancang alur sistem yang jelas, membangun dengan kode yang rapi, lalu mengujinya sampai benar-benar siap dipakai.",
+    p3: "Di luar layar kode, saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya.",
+    stats: [
+      { val: "15+", lbl: "WEB APPS BUILT" },
+      { val: "200+", lbl: "TEST CASES WRITTEN" },
+      { val: "6", lbl: "SYSTEM DESIGN DOCS" },
+      { val: "98%", lbl: "BUG RESOLUTION RATE" }
+    ]
+  },
+  projects: [
+    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Dashboard Analitik Placeholder', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Automation Test Suite Placeholder', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
+  ],
+  timeline: [
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
+    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
+  ],
+  skills: [
+    { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
+    { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
+    { id: 3, num: '/ 03', title: 'System Analysis', list: ['Requirement Gathering', 'UML & Flowchart', 'Database Design (ERD)', 'Business Process Modeling'] },
+    { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Manual Testing', 'Test Case & Test Plan', 'Bug Tracking', 'Basic Automation (Selenium)'] }
+  ],
+  contact: {
+    title: "Mari bangun sesuatu bersama.",
+    email: "hello@mariaboro.my.id",
+    github: "https://github.com/mariaboro",
+    linkedin: "https://www.linkedin.com/in/mariaboro/",
+    instagram: "https://www.instagram.com/mariaboro_/",
+    cv: "#",
+    footerText: "© 2026 Maria Oxtavia Laurence Siboro. Built with intent."
+  },
+  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API']
+};
+
 async function loadFullCMSContent() {
   let cmsData = null;
 
@@ -1341,7 +1393,10 @@ async function loadFullCMSContent() {
     }
   }
 
-  if (!cmsData) return; // Menggunakan static HTML default jika tidak ada data CMS
+  // 3. Fallback ke defaultData jika LocalStorage kosong (misal di mode Incognito)
+  if (!cmsData) {
+    cmsData = defaultData;
+  }
 
   // A. Render Hero Section
   if (cmsData.hero) {
