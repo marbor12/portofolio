@@ -170,6 +170,36 @@ nav.scrolled{
 }
 .nav-cta:hover{background:var(--accent-2);transform:translateY(-1px);}
 
+.nav-right{display:flex;align-items:center;gap:14px;}
+
+/* Language Switcher Button */
+.lang-switch{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(14,24,48,0.7);
+  border:1px solid var(--line-strong);
+  padding:3px 6px;border-radius:100px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.lang-btn{
+  background:none;border:none;color:var(--ink-dim);
+  font-family:var(--ff-mono);font-size:0.74rem;font-weight:600;
+  padding:3px 9px;border-radius:100px;cursor:pointer;
+  transition:all .25s ease;
+}
+.lang-btn:hover{color:var(--ink);}
+.lang-btn.active{
+  background:var(--accent);color:#fff;
+  box-shadow:0 0 10px rgba(76,124,255,0.4);
+}
+.lang-divider{font-family:var(--ff-mono);font-size:0.7rem;color:var(--ink-faint);opacity:0.6;}
+
+.mobile-lang-switch{
+  margin-top:10px;gap:8px;padding:6px 12px;background:rgba(10,17,33,0.9);
+}
+.mobile-lang-switch .lang-btn{
+  font-size:0.85rem;padding:6px 16px;
+}
+
 /* burger + mobile menu */
 .burger{
   display:none;flex-direction:column;justify-content:center;align-items:flex-end;gap:5px;
@@ -781,21 +811,32 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
 <nav id="nav">
   <div class="logo"><span class="dot"></span>mariaboro.dev</div>
   <ul class="nav-links">
-    <li><a href="#about">01 — About</a></li>
-    <li><a href="#skills">02 — Skills</a></li>
-    <li><a href="#work">03 — Work</a></li>
-    <li><a href="#experience">04 — Experience</a></li>
+    <li><a href="#about" id="navAbout">01 — About</a></li>
+    <li><a href="#skills" id="navSkills">02 — Stack</a></li>
+    <li><a href="#work" id="navWork">03 — Work</a></li>
+    <li><a href="#experience" id="navExp">04 — Experience</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Let's talk</a>
+  <div class="nav-right">
+    <div class="lang-switch" id="navLangSwitch">
+      <button type="button" class="lang-btn" data-lang="id" onclick="setLanguage('id')">ID</button>
+      <span class="lang-divider">/</span>
+      <button type="button" class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+    <a href="#contact" class="nav-cta" id="navCta">Let's talk</a>
+  </div>
   <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#about"><span>01</span>About</a>
-  <a href="#skills"><span>02</span>Skills</a>
-  <a href="#work"><span>03</span>Work</a>
-  <a href="#experience"><span>04</span>Experience</a>
-  <a href="#contact" class="mm-cta">Let's talk ↗</a>
+  <a href="#about"><span id="mmAboutNum">01</span><span id="mmAboutText">About</span></a>
+  <a href="#skills"><span id="mmSkillsNum">02</span><span id="mmSkillsText">Stack</span></a>
+  <a href="#work"><span id="mmWorkNum">03</span><span id="mmWorkText">Work</span></a>
+  <a href="#experience"><span id="mmExpNum">04</span><span id="mmExpText">Experience</span></a>
+  <div class="lang-switch mobile-lang-switch">
+    <button type="button" class="lang-btn" data-lang="id" onclick="setLanguage('id')">🇮🇩 Indonesia</button>
+    <button type="button" class="lang-btn active" data-lang="en" onclick="setLanguage('en')">🇬🇧 English</button>
+  </div>
+  <a href="#contact" class="mm-cta" id="mmCta">Let's talk ↗</a>
 </div>
 
 <!-- HERO -->
@@ -817,8 +858,8 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
         </h1>
         <div class="hero-role">Full-Stack Developer — System Analyst — QA Engineer</div>
         <p class="hero-desc">
-          Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka —
-          merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.
+          Information Systems graduate building digital products from system logic to user interface —
+          designing workflows, writing clean code, and ensuring rigorous quality testing before release.
         </p>
       </div>
 
@@ -858,16 +899,17 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <div class="eyebrow">01 / ABOUT</div>
-        <h2 class="sec-title">Berpikir seperti analis,<br>membangun seperti developer.</h2>
+        <div class="eyebrow">01 / ABOUT ME</div>
+        <h2 class="sec-title">Think like an analyst,<br>build like a developer.</h2>
       </div>
+      <div class="sec-note">An Information Systems background provides me with an end-to-end perspective — from business requirements down to lines of code.</div>
     </div>
 
     <div class="about-grid">
       <div class="about-text reveal">
-        <p>Saya <strong>Maria Oxtavia Laurence Siboro</strong>, lulusan Sistem Informasi yang bergerak di persimpangan antara <strong>pengembangan perangkat lunak</strong>, <strong>analisis sistem</strong>, dan <strong>quality assurance</strong>.</p>
-        <p>Saya percaya produk yang baik lahir dari proses yang tertata: memahami masalah, merancang alur sistem yang jelas, membangun dengan kode yang rapi, lalu mengujinya sampai benar-benar siap dipakai.</p>
-        <p>Di luar layar kode, saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya.</p>
+        <p>I am <strong>Maria Oxtavia Laurence Siboro</strong>, an Information Systems graduate operating at the intersection of <strong>software development</strong>, <strong>system analysis</strong>, and <strong>quality assurance</strong>.</p>
+        <p>I believe great products stem from a structured workflow: understanding the problem, modeling clear system architectures, crafting clean code, and testing meticulously until production-ready.</p>
+        <p>Beyond coding, I enjoy documenting analytical workflows through diagrams and test cases — a habit carried from system analysis into every engineering project I take on.</p>
       </div>
       <div class="stat-grid reveal">
         <div class="stat"><b>15+</b><span>WEB APPS BUILT</span></div>
@@ -885,9 +927,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
     <div class="sec-head">
       <div>
         <div class="eyebrow">02 / STACK</div>
-        <h2 class="sec-title">Toolkit saya.</h2>
+        <h2 class="sec-title">My toolkit.</h2>
       </div>
-      <div class="sec-note">Empat sisi dari satu proses pengembangan produk yang sama.</div>
+      <div class="sec-note">Four dimensions of a unified product engineering lifecycle.</div>
     </div>
 
     <div class="skills-grid reveal">
@@ -941,9 +983,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
     <div class="sec-head">
       <div>
         <div class="eyebrow">03 / SELECTED WORK</div>
-        <h2 class="sec-title">Project terpilih.</h2>
+        <h2 class="sec-title">Selected work.</h2>
       </div>
-      <div class="sec-note">Ganti data di bawah dengan project asli kamu — nama, deskripsi, tech stack, dan link.</div>
+      <div class="sec-note">A showcase of web applications, system design, and software testing suites.</div>
     </div>
 
     <div class="project-list">
@@ -951,9 +993,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
       <div class="project reveal">
         <div class="project-info">
           <div class="p-index">PROJECT / 01</div>
-          <h3>Sistem Informasi Manajemen Placeholder</h3>
+          <h3>Internal Management Information System</h3>
           <span style="font-family:var(--ff-mono);font-size:0.78rem;color:var(--accent-2);display:block;margin-bottom:8px;">Full-Stack Developer</span>
-          <p>Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.</p>
+          <p>Enterprise web application for managing internal operations — engineered from requirement gathering and ERD design to full implementation and functional testing.</p>
           <div class="tag-row">
             <span class="tag">Laravel</span><span class="tag">MySQL</span><span class="tag">Bootstrap</span>
           </div>
@@ -968,9 +1010,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
       <div class="project reveal">
         <div class="project-info">
           <div class="p-index">PROJECT / 02</div>
-          <h3>Dashboard Analitik Placeholder</h3>
+          <h3>Operational Analytics Dashboard</h3>
           <span style="font-family:var(--ff-mono);font-size:0.78rem;color:var(--accent-2);display:block;margin-bottom:8px;">System Analyst &amp; Front-End</span>
-          <p>Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.</p>
+          <p>Real-time dashboard for operational data visualization, featuring dynamic filtering and REST API integrations powered by Node.js backend.</p>
           <div class="tag-row">
             <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Chart.js</span>
           </div>
@@ -985,9 +1027,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
       <div class="project reveal">
         <div class="project-info">
           <div class="p-index">PROJECT / 03</div>
-          <h3>Automation Test Suite Placeholder</h3>
+          <h3>Web Automation Test Suite</h3>
           <span style="font-family:var(--ff-mono);font-size:0.78rem;color:var(--accent-2);display:block;margin-bottom:8px;">QA Engineer</span>
-          <p>Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.</p>
+          <p>Automated testing framework for internal web applications, significantly cutting down manual regression testing turnaround time.</p>
           <div class="tag-row">
             <span class="tag">Selenium</span><span class="tag">Python</span><span class="tag">CI/CD</span>
           </div>
@@ -1009,9 +1051,9 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
     <div class="sec-head">
       <div>
         <div class="eyebrow">04 / TIMELINE</div>
-        <h2 class="sec-title">Perjalanan singkat.</h2>
+        <h2 class="sec-title">Brief timeline.</h2>
       </div>
-      <div class="sec-note">Urutan kronologis — pendidikan, magang, dan pengalaman kerja.</div>
+      <div class="sec-note">Chronological timeline of education, internships, and professional roles.</div>
     </div>
 
     <div class="timeline">
@@ -1020,25 +1062,25 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
         <div class="t-main">
           <h3>Freelance Full-Stack Developer</h3>
           <span class="t-role">Self-employed</span>
-          <p>Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.</p>
+          <p>Architecting and building full-stack web applications for clients, from system design through to cloud deployment.</p>
         </div>
-        <div class="t-date">2025 — sekarang</div>
+        <div class="t-date">2025 — Present</div>
       </div>
       <div class="t-item reveal">
         <div class="t-num">2024</div>
         <div class="t-main">
-          <h3>Magang QA / Junior Developer — Perusahaan Placeholder</h3>
+          <h3>QA Intern / Junior Developer</h3>
           <span class="t-role">Quality Assurance Intern</span>
-          <p>Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.</p>
+          <p>Authored test suites, executed rigorous manual testing, and assisted engineering teams in debugging web apps.</p>
         </div>
         <div class="t-date">Jan — Jun 2024</div>
       </div>
       <div class="t-item reveal">
         <div class="t-num">2021</div>
         <div class="t-main">
-          <h3>Sistem Informasi — Universitas Placeholder</h3>
-          <span class="t-role">S1, Fakultas Ilmu Komputer</span>
-          <p>Fokus pada pengembangan perangkat lunak, analisis &amp; perancangan sistem, serta basis data.</p>
+          <h3>Information Systems — University</h3>
+          <span class="t-role">Bachelor Degree, Computer Science</span>
+          <p>Focused on software engineering, system analysis &amp; design, database architecture, and QA methodologies.</p>
         </div>
         <div class="t-date">2021 — 2025</div>
       </div>
@@ -1049,7 +1091,7 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
 <!-- CONTACT -->
 <section id="contact" class="contact wrap">
   <div class="eyebrow">05 / CONTACT</div>
-  <h2>Mari bangun sesuatu <span>bersama.</span></h2>
+  <h2>Let's build something <span>together.</span></h2>
   <a href="https://mail.google.com/mail/?view=cm&fs=1&to=hello@mariaboro.my.id" target="_blank" rel="noopener noreferrer" class="magnetic-btn" id="magnetBtn">hello@mariaboro.my.id ↗</a>
   <div class="contact-links">
     <a href="https://github.com/mariaboro" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -1319,21 +1361,22 @@ function setupMobileMenu(){
   window.addEventListener('resize', ()=>{ if(window.innerWidth > 860) closeMenu(); });
 }
 
-const defaultData = {
+const defaultData_id = {
   hero: {
     firstName: "Maria Oxtavia Laurence",
     lastName: "Siboro",
     role: "Full-Stack Developer — System Analyst — QA Engineer",
     desc: "Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.",
-    expYears: "4+ years learning & building",
-    projectsCount: "12+ projects shipped",
-    location: "Bandung, ID based, open to remote",
-    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+    expYears: "4+ tahun belajar & berkarya",
+    projectsCount: "12+ project selesai",
+    location: "Bandung, ID, terbuka remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Tersedia untuk peran full-stack & analis\n$ run tests --all\n> 42 lulus, 0 gagal [100% cakupan pengujian]"
   },
   about: {
-    title: "Berpikir seperti analis, membangun seperti developer.",
+    eyebrow: "01 / TENTANG SAYA",
+    title: "Berpikir seperti analis,<br>membangun seperti developer.",
     note: "Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode.",
-    p1: "Saya Maria Oxtavia Laurence Siboro, lulusan Sistem Informasi yang bergerak di persimpangan antara pengembangan perangkat lunak, analisis sistem, dan quality assurance.",
+    p1: "Saya <strong>Maria Oxtavia Laurence Siboro</strong>, lulusan Sistem Informasi yang bergerak di persimpangan antara <strong>pengembangan perangkat lunak</strong>, <strong>analisis sistem</strong>, dan <strong>quality assurance</strong>.",
     p2: "Saya percaya produk yang baik lahir dari proses yang tertata: memahami masalah, merancang alur sistem yang jelas, membangun dengan kode yang rapi, lalu mengujinya sampai benar-benar siap dipakai.",
     p3: "Di luar layar kode, saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya.",
     stats: [
@@ -1343,24 +1386,103 @@ const defaultData = {
       { val: "98%", lbl: "BUG RESOLUTION RATE" }
     ]
   },
+  skills: [
+    { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
+    { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
+    { id: 3, num: '/ 03', title: 'Analisis Sistem', list: ['Pengumpulan Kebutuhan', 'UML & Flowchart', 'Desain Basis Data (ERD)', 'Pemodelan Proses Bisnis'] },
+    { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Pengujian Manual', 'Test Case & Test Plan', 'Pelacakan Bug', 'Otomatisasi Dasar (Selenium)'] }
+  ],
   projects: [
-    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
-    { id: 2, title: 'Dashboard Analitik Placeholder', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
-    { id: 3, title: 'Automation Test Suite Placeholder', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
+    { id: 1, title: 'Sistem Informasi Manajemen Internal', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Dashboard Analitik Operasional', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Automation Test Suite Web', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
   ],
   timeline: [
-    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
-    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
-    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Kerja Mandiri', images: [], desc: 'Membangun beberapa aplikasi web untuk klien, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
+    { id: 2, year: '2024', title: 'Magang QA / Junior Developer', role: 'Magang Quality Assurance', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
   ],
+  contact: {
+    eyebrow: "05 / KONTAK",
+    title: "Mari bangun sesuatu <span>bersama.</span>",
+    email: "hello@mariaboro.my.id",
+    github: "https://github.com/mariaboro",
+    linkedin: "https://www.linkedin.com/in/mariaboro/",
+    instagram: "https://www.instagram.com/mariaboro_/",
+    cv: "#",
+    footerText: "© 2026 Maria Oxtavia Laurence Siboro. Dibuat dengan dedikasi."
+  },
+  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'Analisis Sistem', 'UML', 'Pengujian Manual & Otomatis', 'Figma', 'Git', 'REST API'],
+  labels: {
+    navAbout: "01 — Tentang",
+    navSkills: "02 — Stack",
+    navWork: "03 — Project",
+    navExp: "04 — Pengalaman",
+    navCta: "Hubungi Saya",
+    navCtaArrow: "Hubungi Saya ↗",
+    stackEyebrow: "02 / STACK",
+    stackTitle: "Toolkit saya.",
+    stackNote: "Empat sisi dari satu proses pengembangan produk yang sama.",
+    workEyebrow: "03 / PROJECT TERPILIH",
+    workTitle: "Project terpilih.",
+    workNote: "Daftar karya aplikasi web, arsitektur sistem, dan pengujian yang telah dikembangkan.",
+    expEyebrow: "04 / TIMELINE",
+    expTitle: "Perjalanan singkat.",
+    expNote: "Urutan kronologis — pendidikan, magang, dan pengalaman kerja.",
+    btnMoreProjects: "Tampilkan Lebih Banyak Project (+{count}) ↴",
+    btnLessProjects: "Tampilkan Lebih Sedikit ↑",
+    btnMoreTimeline: "Tampilkan Lebih Banyak Pengalaman (+{count}) ↴",
+    btnLessTimeline: "Tampilkan Lebih Sedikit ↑",
+    lightboxTag: "DOKUMENTASI MEDIA",
+    lightboxEnlarge: "🔍 Perbesar",
+    backToTop: "↑ Kembali ke atas"
+  }
+};
+
+const defaultData_en = {
+  hero: {
+    firstName: "Maria Oxtavia Laurence",
+    lastName: "Siboro",
+    role: "Full-Stack Developer — System Analyst — QA Engineer",
+    desc: "Information Systems graduate building digital products from system logic to user interface — designing workflows, writing clean code, and ensuring rigorous quality testing before release.",
+    expYears: "4+ years learning & building",
+    projectsCount: "12+ projects shipped",
+    location: "Bandung, ID based, open to remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+  },
+  about: {
+    eyebrow: "01 / ABOUT ME",
+    title: "Think like an analyst,<br>build like a developer.",
+    note: "An Information Systems background provides me with an end-to-end perspective — from business requirements down to lines of code.",
+    p1: "I am <strong>Maria Oxtavia Laurence Siboro</strong>, an Information Systems graduate operating at the intersection of <strong>software development</strong>, <strong>system analysis</strong>, and <strong>quality assurance</strong>.",
+    p2: "I believe great products stem from a structured workflow: understanding the problem, modeling clear system architectures, crafting clean code, and testing meticulously until production-ready.",
+    p3: "Beyond coding, I enjoy documenting analytical workflows through diagrams and test cases — a habit carried from system analysis into every engineering project I take on.",
+    stats: [
+      { val: "15+", lbl: "WEB APPS BUILT" },
+      { val: "200+", lbl: "TEST CASES WRITTEN" },
+      { val: "6", lbl: "SYSTEM DESIGN DOCS" },
+      { val: "98%", lbl: "BUG RESOLUTION RATE" }
+    ]
+  },
   skills: [
     { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
     { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
     { id: 3, num: '/ 03', title: 'System Analysis', list: ['Requirement Gathering', 'UML & Flowchart', 'Database Design (ERD)', 'Business Process Modeling'] },
     { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Manual Testing', 'Test Case & Test Plan', 'Bug Tracking', 'Basic Automation (Selenium)'] }
   ],
+  projects: [
+    { id: 1, title: 'Internal Management Information System', role: 'Full-Stack Developer', description: 'Enterprise web application for managing internal operations — engineered from requirement gathering and ERD design to full implementation and functional testing.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Operational Analytics Dashboard', role: 'System Analyst & Front-End', description: 'Real-time dashboard for operational data visualization, featuring dynamic filtering and REST API integrations powered by Node.js backend.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Web Automation Test Suite', role: 'QA Engineer', description: 'Automated testing framework for internal web applications, significantly cutting down manual regression testing turnaround time.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
+  ],
+  timeline: [
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Architecting and building full-stack web applications for clients, from system design through to cloud deployment.', date: '2025 — Present' },
+    { id: 2, year: '2024', title: 'QA Intern / Junior Developer', role: 'Quality Assurance Intern', images: [], desc: 'Authored test suites, executed rigorous manual testing, and assisted engineering teams in debugging web apps.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Information Systems — University', role: 'Bachelor Degree, Computer Science', images: [], desc: 'Focused on software engineering, system analysis & design, database architecture, and QA methodologies.', date: '2021 — 2025' }
+  ],
   contact: {
-    title: "Mari bangun sesuatu bersama.",
+    eyebrow: "05 / CONTACT",
+    title: "Let's build something <span>together.</span>",
     email: "hello@mariaboro.my.id",
     github: "https://github.com/mariaboro",
     linkedin: "https://www.linkedin.com/in/mariaboro/",
@@ -1368,37 +1490,144 @@ const defaultData = {
     cv: "#",
     footerText: "© 2026 Maria Oxtavia Laurence Siboro. Built with intent."
   },
-  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API']
+  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API'],
+  labels: {
+    navAbout: "01 — About",
+    navSkills: "02 — Stack",
+    navWork: "03 — Work",
+    navExp: "04 — Experience",
+    navCta: "Let's talk",
+    navCtaArrow: "Let's talk ↗",
+    stackEyebrow: "02 / STACK",
+    stackTitle: "My toolkit.",
+    stackNote: "Four dimensions of a unified product engineering lifecycle.",
+    workEyebrow: "03 / SELECTED WORK",
+    workTitle: "Selected work.",
+    workNote: "A showcase of web applications, system design, and software testing suites.",
+    expEyebrow: "04 / TIMELINE",
+    btnMoreTimeline: "Show More Experience (+{count}) ↴",
+    btnLessTimeline: "Show Less ↑"
+  }
 };
 
-async function loadFullCMSContent() {
-  let cmsData = null;
+let currentLang = localStorage.getItem('porto_lang') || 'en';
+let inMemoryCmsCache = {};
 
-  // 1. Coba ambil dari Supabase site_settings jika terhubung
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient.from('site_settings').select('*');
-      if (data && data.length > 0) {
-        cmsData = {};
-        data.forEach(row => { cmsData[row.id] = row.data; });
-      }
-    } catch (e) {
-      console.log('Supabase read error, fallback ke LocalStorage');
-    }
-  }
+function translateToEn(text) {
+  if (!text || typeof text !== 'string') return text;
 
-  // 2. Fallback ke LocalStorage (dari Admin Dashboard) jika tidak ada dari Supabase
+  const map = [
+    // Hero & Bio
+    [/Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis\./gi, "Information Systems graduate building digital products from system logic to user interface — designing workflows, writing clean code, and ensuring rigorous quality testing before release."],
+    [/Berpikir seperti analis,\s*<br>\s*membangun seperti developer\./gi, "Think like an analyst,<br>build like a developer."],
+    [/Berpikir seperti analis,\s*membangun seperti developer\./gi, "Think like an analyst, build like a developer."],
+    [/Latar belakang Sistem Informasi memberi saya cara pandang menyeluruh — dari kebutuhan bisnis sampai baris kode\./gi, "An Information Systems background provides me with an end-to-end perspective — from business requirements down to lines of code."],
+    [/Saya\s+<strong>Maria Oxtavia Laurence Siboro<\/strong>,\s+lulusan Sistem Informasi yang bergerak di persimpangan antara\s+<strong>pengembangan perangkat lunak<\/strong>,\s+<strong>analisis sistem<\/strong>,\s+dan\s+<strong>quality assurance<\/strong>\./gi, "I am <strong>Maria Oxtavia Laurence Siboro</strong>, an Information Systems graduate operating at the intersection of <strong>software development</strong>, <strong>system analysis</strong>, and <strong>quality assurance</strong>."],
+    [/Saya Maria Oxtavia Laurence Siboro, lulusan Sistem Informasi yang bergerak di persimpangan antara pengembangan perangkat lunak, analisis sistem, dan quality assurance\./gi, "I am Maria Oxtavia Laurence Siboro, an Information Systems graduate operating at the intersection of software development, system analysis, and quality assurance."],
+    [/Saya percaya produk yang baik lahir dari proses yang tertata:\s*memahami masalah,\s*merancang alur sistem yang jelas,\s*membangun dengan kode yang rapi,\s*lalu mengujinya sampai benar-benar siap dipakai\./gi, "I believe great products stem from a structured workflow: understanding the problem, modeling clear system architectures, crafting clean code, and testing meticulously until production-ready."],
+    [/Di luar layar kode,\s*saya senang mendokumentasikan proses berpikir lewat diagram dan test case — kebiasaan yang saya bawa dari sisi analis ke setiap project development saya\./gi, "Beyond coding, I enjoy documenting analytical workflows through diagrams and test cases — a habit carried from system analysis into every engineering project I take on."],
+
+    // Projects
+    [/Fitur Trainer - Academy IdSpora/gi, "Trainer Feature - Academy IdSpora"],
+    [/Aplikasi web untuk mengelola data trainer — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional\./gi, "Web application for managing trainer data — engineered from requirement analysis and ERD design to full implementation and functional testing."],
+    [/Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional\./gi, "Enterprise web application for managing internal operations — engineered from requirement gathering and ERD design to full implementation and functional testing."],
+    [/Dashboard real-time untuk visualisasi data operasional/gi, "Real-time dashboard for operational data visualization"],
+    [/Kerangka pengujian otomatis untuk aplikasi web internal,\s*mengurangi waktu regression testing manual secara signifikan\./gi, "Automated testing framework for internal web applications, significantly cutting down manual regression testing turnaround time."],
+
+    // Timeline / Experience
+    [/Menyelenggarakan event/gi, "Organizing and executing tech events and operations"],
+    [/- Berpartisipasi sebagai event organizer/gi, "- Participating as an event organizer and curriculum manager"],
+    [/Asisten Praktikum/gi, "Lab Teaching Assistant"],
+    [/Magang Quality Assurance/gi, "Quality Assurance Intern"],
+    [/S1, Fakultas Ilmu Komputer/gi, "Bachelor Degree, Computer Science"],
+    [/Kerja Mandiri/gi, "Self-employed"],
+    [/2025 — sekarang/gi, "2025 — Present"],
+    [/2025 — Sekarang/gi, "2025 — Present"],
+    [/Membangun beberapa aplikasi web untuk klien kecil,\s*dari perancangan sistem sampai deployment\./gi, "Architecting and building full-stack web applications for clients, from system design through to cloud deployment."],
+    [/Membangun beberapa aplikasi web untuk klien,\s*dari perancangan sistem sampai deployment\./gi, "Architecting and building full-stack web applications for clients, from system design through to cloud deployment."],
+    [/Menulis test case,\s*melakukan manual testing,\s*dan membantu perbaikan bug pada aplikasi web internal\./gi, "Authored test suites, executed rigorous manual testing, and assisted engineering teams in debugging web apps."],
+    [/Fokus pada pengembangan perangkat lunak,\s*analisis & perancangan sistem,\s*serta basis data\./gi, "Focused on software engineering, system analysis & design, database architecture, and QA methodologies."],
+
+    // Contact
+    [/Mari bangun sesuatu <span>bersama\.<\/span>/gi, "Let's build something <span>together.</span>"],
+    [/Mari bangun sesuatu bersama\./gi, "Let's build something together."],
+    [/Dibuat dengan dedikasi\./gi, "Built with intent."]
+  ];
+
+  let result = text;
+  map.forEach(([regex, replacement]) => {
+    result = result.replace(regex, replacement);
+  });
+  return result;
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('porto_lang', lang);
+  document.documentElement.lang = lang;
+
+  // Update active state of language switcher buttons INSTANTLY
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+
+  // Render INSTANTLY from local memory cache (<1ms)
+  renderSyncCMSContent(lang);
+
+  // Sync with Supabase asynchronously in background without blocking UI
+  syncSupabaseInBackground(lang);
+}
+
+function renderSyncCMSContent(lang) {
+  const defaultObj = lang === 'en' ? defaultData_en : defaultData_id;
+  let cmsData = inMemoryCmsCache[lang];
+
+  // 1. Check LocalStorage for specific language
   if (!cmsData) {
-    const saved = localStorage.getItem('porto_cms_data');
+    const saved = localStorage.getItem(`porto_cms_data_${lang}`);
     if (saved) {
-      try { cmsData = JSON.parse(saved); } catch(e){}
+      try { cmsData = JSON.parse(saved); inMemoryCmsCache[lang] = cmsData; } catch(e){}
     }
   }
 
-  // 3. Fallback ke defaultData jika LocalStorage kosong (misal di mode Incognito)
-  if (!cmsData) {
-    cmsData = defaultData;
+  // 2. If EN is selected but no EN data saved, fallback to ID data & translate dynamically
+  if (!cmsData && lang === 'en') {
+    const savedId = localStorage.getItem('porto_cms_data_id') || localStorage.getItem('porto_cms_data');
+    if (savedId) {
+      try { cmsData = JSON.parse(savedId); } catch(e){}
+    }
   }
+
+  // 3. Fallback to default object per language if still null
+  if (!cmsData) {
+    cmsData = defaultObj;
+  } else {
+    cmsData = {
+      hero: cmsData.hero || defaultObj.hero,
+      about: cmsData.about || defaultObj.about,
+      skills: cmsData.skills || defaultObj.skills,
+      projects: cmsData.projects || defaultObj.projects,
+      timeline: cmsData.timeline || defaultObj.timeline,
+      contact: cmsData.contact || defaultObj.contact,
+      marquee: cmsData.marquee || defaultObj.marquee,
+      labels: defaultObj.labels
+    };
+  }
+
+  const labels = defaultObj.labels;
+
+  // Instant Render Navigation Labels
+  const navAbout = document.getElementById('navAbout'); if (navAbout) navAbout.textContent = labels.navAbout;
+  const navSkills = document.getElementById('navSkills'); if (navSkills) navSkills.textContent = labels.navSkills;
+  const navWork = document.getElementById('navWork'); if (navWork) navWork.textContent = labels.navWork;
+  const navExp = document.getElementById('navExp'); if (navExp) navExp.textContent = labels.navExp;
+  const navCta = document.getElementById('navCta'); if (navCta) navCta.textContent = labels.navCta;
+
+  const mmAboutText = document.getElementById('mmAboutText'); if (mmAboutText) mmAboutText.textContent = labels.navAbout.replace(/^\d+\s*—\s*/, '');
+  const mmSkillsText = document.getElementById('mmSkillsText'); if (mmSkillsText) mmSkillsText.textContent = labels.navSkills.replace(/^\d+\s*—\s*/, '');
+  const mmWorkText = document.getElementById('mmWorkText'); if (mmWorkText) mmWorkText.textContent = labels.navWork.replace(/^\d+\s*—\s*/, '');
+  const mmExpText = document.getElementById('mmExpText'); if (mmExpText) mmExpText.textContent = labels.navExp.replace(/^\d+\s*—\s*/, '');
+  const mmCta = document.getElementById('mmCta'); if (mmCta) mmCta.textContent = labels.navCtaArrow;
 
   // A. Render Hero Section
   if (cmsData.hero) {
@@ -1408,20 +1637,29 @@ async function loadFullCMSContent() {
     if (nameLines[1] && h.lastName) nameLines[1].textContent = h.lastName;
     
     const roleEl = document.querySelector('.hero-role');
-    if (roleEl && h.role) roleEl.textContent = h.role;
+    if (roleEl) roleEl.textContent = lang === 'en' ? translateToEn(h.role) : h.role;
 
     const descEl = document.querySelector('.hero-desc');
-    if (descEl && h.desc) descEl.textContent = h.desc;
+    if (descEl) descEl.textContent = lang === 'en' ? translateToEn(h.desc) : h.desc;
 
     const metaDivs = document.querySelectorAll('.hero-meta div');
-    if (metaDivs[0] && h.expYears) metaDivs[0].innerHTML = `<strong>${h.expYears.split(' ')[0]}</strong> ${h.expYears.split(' ').slice(1).join(' ')}`;
-    if (metaDivs[1] && h.projectsCount) metaDivs[1].innerHTML = `<strong>${h.projectsCount.split(' ')[0]}</strong> ${h.projectsCount.split(' ').slice(1).join(' ')}`;
-    if (metaDivs[2] && h.location) metaDivs[2].innerHTML = `<strong>${h.location.split(' ')[0]}</strong> ${h.location.split(' ').slice(1).join(' ')}`;
+    const expStr = lang === 'en' ? translateToEn(h.expYears) : h.expYears;
+    const projStr = lang === 'en' ? translateToEn(h.projectsCount) : h.projectsCount;
+    const locStr = lang === 'en' ? translateToEn(h.location) : h.location;
 
-    if (h.terminalLines) {
-      window.customTerminalLines = h.terminalLines;
+    if (metaDivs[0] && expStr) metaDivs[0].innerHTML = `<strong>${expStr.split(' ')[0]}</strong> ${expStr.split(' ').slice(1).join(' ')}`;
+    if (metaDivs[1] && projStr) metaDivs[1].innerHTML = `<strong>${projStr.split(' ')[0]}</strong> ${projStr.split(' ').slice(1).join(' ')}`;
+    if (metaDivs[2] && locStr) metaDivs[2].innerHTML = `<strong>${locStr.split(' ')[0]}</strong> ${locStr.split(' ').slice(1).join(' ')}`;
+
+    let termText = h.terminalLines;
+    if (lang === 'en' && termText && termText.includes('Tersedia')) {
+      termText = "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]";
+    }
+
+    if (termText) {
+      window.customTerminalLines = termText;
       if (typeof window.renderTerminal === 'function') {
-        window.renderTerminal(h.terminalLines);
+        window.renderTerminal(termText);
       }
     }
   }
@@ -1430,8 +1668,7 @@ async function loadFullCMSContent() {
   if (cmsData.marquee && Array.isArray(cmsData.marquee)) {
     const marqueeEl = document.querySelector('.marquee');
     if (marqueeEl) {
-      const itemsHtml = cmsData.marquee.map(item => `<span><b>${item}</b></span>`).join('');
-      // Duplicate for smooth continuous marquee
+      const itemsHtml = cmsData.marquee.map(item => `<span><b>${lang === 'en' ? translateToEn(item) : item}</b></span>`).join('');
       marqueeEl.innerHTML = itemsHtml + itemsHtml;
     }
   }
@@ -1439,18 +1676,21 @@ async function loadFullCMSContent() {
   // C. Render About Section
   if (cmsData.about) {
     const a = cmsData.about;
+    const eyebrowEl = document.querySelector('#about .eyebrow');
+    if (eyebrowEl) eyebrowEl.textContent = lang === 'en' ? translateToEn(a.eyebrow) : a.eyebrow;
+
     const secTitle = document.querySelector('#about .sec-title');
-    if (secTitle && a.title) secTitle.innerHTML = a.title.replace(/\./g, '.<br>');
+    if (secTitle) secTitle.innerHTML = lang === 'en' ? translateToEn(a.title) : a.title;
 
     const secNote = document.querySelector('#about .sec-note');
-    if (secNote && a.note) secNote.textContent = a.note;
+    if (secNote) secNote.textContent = lang === 'en' ? translateToEn(a.note) : a.note;
 
     const aboutText = document.querySelector('.about-text');
     if (aboutText && a.p1) {
       aboutText.innerHTML = `
-        <p>${a.p1}</p>
-        <p>${a.p2 || ''}</p>
-        <p>${a.p3 || ''}</p>
+        <p>${lang === 'en' ? translateToEn(a.p1) : a.p1}</p>
+        <p>${lang === 'en' ? translateToEn(a.p2 || '') : (a.p2 || '')}</p>
+        <p>${lang === 'en' ? translateToEn(a.p3 || '') : (a.p3 || '')}</p>
       `;
     }
 
@@ -1458,13 +1698,41 @@ async function loadFullCMSContent() {
       const statGrid = document.querySelector('.stat-grid');
       if (statGrid) {
         statGrid.innerHTML = a.stats.map(s => `
-          <div class="stat"><b>${s.val}</b><span>${s.lbl}</span></div>
+          <div class="stat"><b>${s.val}</b><span>${lang === 'en' ? translateToEn(s.lbl) : s.lbl}</span></div>
         `).join('');
       }
     }
   }
 
-  // D. Render Projects Section
+  // D. Render Skills Section
+  const stackEyebrow = document.querySelector('#skills .eyebrow'); if (stackEyebrow) stackEyebrow.textContent = labels.stackEyebrow;
+  const stackTitle = document.querySelector('#skills .sec-title'); if (stackTitle) stackTitle.textContent = labels.stackTitle;
+  const stackNote = document.querySelector('#skills .sec-note'); if (stackNote) stackNote.textContent = labels.stackNote;
+
+  if (cmsData.skills && Array.isArray(cmsData.skills) && cmsData.skills.length > 0) {
+    const sContainer = document.querySelector('.skills-grid');
+    if (sContainer) {
+      sContainer.innerHTML = '';
+      cmsData.skills.forEach(s => {
+        const listArr = Array.isArray(s.list) ? s.list : (s.list || '').split(',');
+        const listHtml = listArr.map(l => `<li>${lang === 'en' ? translateToEn(l.trim()) : l.trim()}</li>`).join('');
+        const sEl = document.createElement('div');
+        sEl.className = 'skill-card';
+        sEl.innerHTML = `
+          <span class="num">${s.num}</span>
+          <h3>${lang === 'en' ? translateToEn(s.title) : s.title}</h3>
+          <ul>${listHtml}</ul>
+        `;
+        sContainer.appendChild(sEl);
+      });
+    }
+  }
+
+  // E. Render Projects Section
+  const workEyebrow = document.querySelector('#work .eyebrow'); if (workEyebrow) workEyebrow.textContent = labels.workEyebrow;
+  const workTitle = document.querySelector('#work .sec-title'); if (workTitle) workTitle.textContent = labels.workTitle;
+  const workNote = document.querySelector('#work .sec-note'); if (workNote) workNote.textContent = labels.workNote;
+
   if (cmsData.projects && Array.isArray(cmsData.projects) && cmsData.projects.length > 0) {
     const pContainer = document.querySelector('.project-list');
     if (pContainer) {
@@ -1477,8 +1745,9 @@ async function loadFullCMSContent() {
         const tags = Array.isArray(p.tags) ? p.tags : (p.tags || '').split(',').map(t => t.trim());
         const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
         
-        const roleHtml = p.role 
-          ? `<span style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);display:block;margin-bottom:6px;">${p.role}</span>`
+        const pRole = lang === 'en' ? translateToEn(p.role) : p.role;
+        const roleHtml = pRole 
+          ? `<span style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);display:block;margin-bottom:6px;">${pRole}</span>`
           : '';
 
         const arrowSvg = `<div class="arrow-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>`;
@@ -1492,17 +1761,21 @@ async function loadFullCMSContent() {
           : `<div class="project-visual" data-tag="${p.tag_code || './project-' + num}">`;
         const visualCloseTag = p.link ? `</a>` : `</div>`;
 
+        const pTitleText = lang === 'en' ? translateToEn(p.title) : p.title;
+        const pDescText = lang === 'en' ? translateToEn(p.description) : p.description;
+
         const isHidden = idx >= limit;
         const projEl = document.createElement('div');
         projEl.className = 'project reveal' + (isHidden ? ' hidden-project' : '');
         projEl.style.opacity = '1';
         projEl.style.transform = 'none';
+        projEl.style.visibility = 'visible';
         projEl.innerHTML = `
           <div class="project-info">
             <div class="p-index">PROJECT / ${num}</div>
-            <h3>${p.title}</h3>
+            <h3>${pTitleText}</h3>
             ${roleHtml}
-            <p>${p.description}</p>
+            <p>${pDescText}</p>
             <div class="tag-row">${tagsHtml}</div>
           </div>
           ${visualOpenTag}
@@ -1520,9 +1793,10 @@ async function loadFullCMSContent() {
         const loadMoreWrap = document.createElement('div');
         loadMoreWrap.className = 'load-more-wrap';
         loadMoreWrap.id = 'projectLoadMoreWrap';
+        const loadMoreTxt = labels.btnMoreProjects.replace('{count}', remaining);
         loadMoreWrap.innerHTML = `
           <button class="btn-load-more" id="btnLoadMoreProjects">
-            Tampilkan Lebih Banyak Project (+${remaining}) ↴
+            ${loadMoreTxt}
           </button>
         `;
         pContainer.insertAdjacentElement('afterend', loadMoreWrap);
@@ -1542,28 +1816,35 @@ async function loadFullCMSContent() {
 window.toggleProjects = function(btn, remainingCount) {
   const hiddenProjects = document.querySelectorAll('.project.hidden-project');
   const allHidden = hiddenProjects.length > 0;
+  const lbls = (currentLang === 'en' ? defaultData_en : defaultData_id).labels;
 
   if (allHidden) {
     document.querySelectorAll('.project').forEach(el => {
       if (el.classList.contains('hidden-project')) {
         el.classList.remove('hidden-project');
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
         if (typeof gsap !== 'undefined') {
           gsap.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
         }
       }
     });
-    btn.innerHTML = `Tampilkan Lebih Sedikit ↑`;
+    btn.innerHTML = lbls.btnLessProjects;
   } else {
     document.querySelectorAll('.project').forEach((el, idx) => {
       if (idx >= 2) {
         el.classList.add('hidden-project');
       }
     });
-    btn.innerHTML = `Tampilkan Lebih Banyak Project (+${remainingCount}) ↴`;
+    btn.innerHTML = lbls.btnMoreProjects.replace('{count}', remainingCount);
   }
 };
 
-  // E. Render Timeline Section
+  // F. Render Timeline Section
+  const expEyebrow = document.querySelector('#experience .eyebrow'); if (expEyebrow) expEyebrow.textContent = labels.expEyebrow;
+  const expTitle = document.querySelector('#experience .sec-title'); if (expTitle) expTitle.textContent = labels.expTitle;
+  const expNote = document.querySelector('#experience .sec-note'); if (expNote) expNote.textContent = labels.expNote;
+
   if (cmsData.timeline && Array.isArray(cmsData.timeline) && cmsData.timeline.length > 0) {
     const tContainer = document.querySelector('.timeline');
     if (tContainer) {
@@ -1571,7 +1852,6 @@ window.toggleProjects = function(btn, remainingCount) {
       const limit = 3;
       const total = cmsData.timeline.length;
 
-      // Urutkan timeline dari tahun terbaru ke terbawah
       const sortedTimeline = [...cmsData.timeline].sort((a, b) => {
         const yA = parseInt((a.year || '').match(/\d{4}/)?.[0] || '0');
         const yB = parseInt((b.year || '').match(/\d{4}/)?.[0] || '0');
@@ -1584,7 +1864,8 @@ window.toggleProjects = function(btn, remainingCount) {
         tEl.className = 't-item reveal' + (isHidden ? ' hidden-timeline' : '');
         tEl.style.opacity = '1';
         tEl.style.transform = 'none';
-        const badgeHtml = item.badge ? `<div class="t-badge">${item.badge}</div>` : '';
+        tEl.style.visibility = 'visible';
+        const badgeHtml = item.badge ? `<div class="t-badge">${lang === 'en' ? translateToEn(item.badge) : item.badge}</div>` : '';
         
         let mediaHtml = '';
         const imgList = Array.isArray(item.images) ? item.images : (item.images ? item.images.split(',') : (item.image ? [item.image] : []));
@@ -1604,23 +1885,28 @@ window.toggleProjects = function(btn, remainingCount) {
               return `
                 <div class="t-media-card" onclick="openLightbox('${safeUrl}', '${safeTitle}', '${safeDesc}')">
                   <img src="${url}" alt="${safeTitle}">
-                  <div class="t-media-overlay">🔍 Perbesar</div>
+                  <div class="t-media-overlay">${labels.lightboxEnlarge}</div>
                 </div>
               `;
             }).join('') +
           `</div>`;
         }
 
+        const itemTitle = lang === 'en' ? translateToEn(item.title) : item.title;
+        const itemRole = lang === 'en' ? translateToEn(item.role) : item.role;
+        const itemDesc = lang === 'en' ? translateToEn(item.desc) : item.desc;
+        const itemDate = lang === 'en' ? translateToEn(item.date) : item.date;
+
         tEl.innerHTML = `
           <div class="t-num">${item.year}</div>
           <div class="t-main">
-            <h3>${item.title}</h3>
-            <span class="t-role">${item.role}</span>
+            <h3>${itemTitle}</h3>
+            <span class="t-role">${itemRole}</span>
             ${badgeHtml}
-            <p>${item.desc}</p>
+            <p>${itemDesc}</p>
             ${mediaHtml}
           </div>
-          <div class="t-date">${item.date}</div>
+          <div class="t-date">${itemDate}</div>
         `;
         tContainer.appendChild(tEl);
       });
@@ -1633,9 +1919,10 @@ window.toggleProjects = function(btn, remainingCount) {
         const loadMoreWrap = document.createElement('div');
         loadMoreWrap.className = 'load-more-wrap';
         loadMoreWrap.id = 'timelineLoadMoreWrap';
+        const loadMoreTimelineTxt = labels.btnMoreTimeline.replace('{count}', remaining);
         loadMoreWrap.innerHTML = `
           <button class="btn-load-more" id="btnLoadMoreTimeline">
-            Tampilkan Lebih Banyak Pengalaman (+${remaining}) ↴
+            ${loadMoreTimelineTxt}
           </button>
         `;
         tContainer.insertAdjacentElement('afterend', loadMoreWrap);
@@ -1655,52 +1942,35 @@ window.toggleProjects = function(btn, remainingCount) {
 window.toggleTimeline = function(btn, remainingCount) {
   const hiddenItems = document.querySelectorAll('.t-item.hidden-timeline');
   const allHidden = hiddenItems.length > 0;
+  const lbls = (currentLang === 'en' ? defaultData_en : defaultData_id).labels;
 
   if (allHidden) {
     document.querySelectorAll('.t-item').forEach(el => {
       if (el.classList.contains('hidden-timeline')) {
         el.classList.remove('hidden-timeline');
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
         if (typeof gsap !== 'undefined') {
           gsap.fromTo(el, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' });
         }
       }
     });
-    btn.innerHTML = `Tampilkan Lebih Sedikit ↑`;
+    btn.innerHTML = lbls.btnLessTimeline;
   } else {
     document.querySelectorAll('.t-item').forEach((el, idx) => {
       if (idx >= 3) {
         el.classList.add('hidden-timeline');
       }
     });
-    btn.innerHTML = `Tampilkan Lebih Banyak Pengalaman (+${remainingCount}) ↴`;
+    btn.innerHTML = lbls.btnMoreTimeline.replace('{count}', remainingCount);
   }
 };
-
-  // F. Render Skills Section
-  if (cmsData.skills && Array.isArray(cmsData.skills) && cmsData.skills.length > 0) {
-    const sContainer = document.querySelector('.skills-grid');
-    if (sContainer) {
-      sContainer.innerHTML = '';
-      cmsData.skills.forEach(s => {
-        const listHtml = (Array.isArray(s.list) ? s.list : (s.list || '').split(','))
-          .map(l => `<li>${l.trim()}</li>`).join('');
-        const sEl = document.createElement('div');
-        sEl.className = 'skill-card';
-        sEl.innerHTML = `
-          <span class="num">${s.num}</span>
-          <h3>${s.title}</h3>
-          <ul>${listHtml}</ul>
-        `;
-        sContainer.appendChild(sEl);
-      });
-    }
-  }
 
   // G. Render Contact & Footer Section
   if (cmsData.contact) {
     const c = cmsData.contact;
-    const cTitle = document.querySelector('#contact h2');
-    if (cTitle && c.title) cTitle.innerHTML = c.title;
+    const cEyebrow = document.querySelector('#contact .eyebrow'); if (cEyebrow) cEyebrow.textContent = lang === 'en' ? translateToEn(c.eyebrow) : c.eyebrow;
+    const cTitle = document.querySelector('#contact h2'); if (cTitle) cTitle.innerHTML = lang === 'en' ? translateToEn(c.title) : c.title;
 
     const magnetBtn = document.getElementById('magnetBtn');
     if (magnetBtn && c.email) {
@@ -1718,12 +1988,48 @@ window.toggleTimeline = function(btn, remainingCount) {
       `;
     }
 
-    const footerText = document.querySelector('footer p');
-    if (footerText && c.footerText) footerText.textContent = c.footerText;
+    const footerText = document.querySelector('footer p'); if (footerText) footerText.textContent = lang === 'en' ? translateToEn(c.footerText) : c.footerText;
+    const backTopBtn = document.querySelector('.back-top'); if (backTopBtn && labels.backToTop) backTopBtn.textContent = labels.backToTop;
+  }
+
+  // Force reveal styles for newly appended elements & refresh animations
+  document.querySelectorAll('.reveal, .project, .t-item, .skill-card, .stat').forEach(el => {
+    el.style.opacity = '1';
+    el.style.visibility = 'visible';
+    if (!el.classList.contains('hidden-project') && !el.classList.contains('hidden-timeline')) {
+      el.style.transform = 'none';
+    }
+  });
+
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.refresh();
   }
 }
 
-loadFullCMSContent();
+async function syncSupabaseInBackground(lang) {
+  if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
+  try {
+    const { data } = await supabaseClient.from('site_settings').select('*');
+    if (data && data.length > 0) {
+      const langData = data.filter(r => r.id.endsWith(`_${lang}`));
+      if (langData.length > 0) {
+        const remoteCmsData = {};
+        langData.forEach(row => {
+          const cleanId = row.id.replace(`_${lang}`, '');
+          remoteCmsData[cleanId] = row.data;
+        });
+        inMemoryCmsCache[lang] = remoteCmsData;
+        localStorage.setItem(`porto_cms_data_${lang}`, JSON.stringify(remoteCmsData));
+        if (currentLang === lang) {
+          renderSyncCMSContent(lang);
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+// Initial Sync & Render (<1ms instant execution)
+setLanguage(currentLang);
 
 </script>
 
@@ -1735,7 +2041,7 @@ loadFullCMSContent();
       <img id="lightboxImg" src="" alt="Dokumentasi Photo">
     </div>
     <div class="lightbox-caption" id="lightboxCaption">
-      <span class="lightbox-tag" id="lightboxTag">DOKUMENTASI MEDIA</span>
+      <span class="lightbox-tag" id="lightboxTag">MEDIA DOCUMENTATION</span>
       <h4 id="lightboxTitle">Judul Foto</h4>
       <p id="lightboxDesc">Deskripsi foto...</p>
     </div>
@@ -1752,16 +2058,26 @@ window.openLightbox = function(imgSrc, title, desc, tag) {
   if (!modal || !img) return;
 
   img.src = imgSrc;
-  if (titleEl) titleEl.textContent = title || 'Dokumentasi Pengalaman';
+  let finalTitle = title || (currentLang === 'en' ? 'Experience Documentation' : 'Dokumentasi Pengalaman');
+  let finalDesc = desc || '';
+  let finalTag = tag || (currentLang === 'en' ? 'MEDIA DOCUMENTATION' : 'DOKUMENTASI MEDIA');
+
+  if (currentLang === 'en') {
+    finalTitle = translateToEn(finalTitle);
+    finalDesc = translateToEn(finalDesc);
+    finalTag = translateToEn(finalTag);
+  }
+
+  if (titleEl) titleEl.textContent = finalTitle;
   if (descEl) {
-    if (desc && desc.trim()) {
-      descEl.textContent = desc;
+    if (finalDesc && finalDesc.trim()) {
+      descEl.textContent = finalDesc;
       descEl.style.display = 'block';
     } else {
       descEl.style.display = 'none';
     }
   }
-  if (tagEl) tagEl.textContent = tag || 'DOKUMENTASI MEDIA / EVENT';
+  if (tagEl) tagEl.textContent = finalTag;
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';

@@ -407,6 +407,14 @@ textarea.form-control{min-height:110px;resize:vertical;}
       </div>
     </div>
 
+    <!-- LANGUAGE MODE SWITCHER BAR FOR CMS -->
+    <div class="cms-lang-bar" style="display:flex;align-items:center;gap:12px;margin-bottom:24px;background:var(--panel-2);padding:14px 20px;border-radius:12px;border:1px solid var(--line-strong);flex-wrap:wrap;">
+      <span style="font-family:var(--ff-mono);font-size:0.82rem;color:var(--ink-dim);font-weight:600;">Bahasa Konten yang Diedit:</span>
+      <button type="button" class="btn btn-secondary btn-sm" id="btnCmsId" onclick="switchCmsLang('id')">🇮🇩 Bahasa Indonesia</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btnCmsEn" onclick="switchCmsLang('en')">🇬🇧 English</button>
+      <span id="cmsLangBadge" style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--accent-2);margin-left:auto;">Mode Edit: English (EN)</span>
+    </div>
+
     <!-- TABS NAVIGATION FOR ALL SECTIONS -->
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('heroTab', this)">01 — Hero &amp; Bio</button>
@@ -848,17 +856,17 @@ if (typeof supabase !== 'undefined') {
   supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Fallback Store Data (Tersimpan di LocalStorage agar sinkron jika Supabase offline)
-const defaultData = {
+// Fallback Store Data untuk Indonesia dan English
+const defaultData_id = {
   hero: {
     firstName: "Maria Oxtavia Laurence",
     lastName: "Siboro",
     role: "Full-Stack Developer — System Analyst — QA Engineer",
     desc: "Lulusan Sistem Informasi yang membangun produk digital dari sisi logika sistem sampai antarmuka — merancang alur, menulis kode, dan memastikan semuanya lolos uji sebelum rilis.",
-    expYears: "4+ years learning & building",
-    projectsCount: "12+ projects shipped",
-    location: "Bandung, ID based, open to remote",
-    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+    expYears: "4+ tahun belajar & berkarya",
+    projectsCount: "12+ project selesai",
+    location: "Bandung, ID, terbuka remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Tersedia untuk peran full-stack & analis\n$ run tests --all\n> 42 lulus, 0 gagal [100% cakupan pengujian]"
   },
   about: {
     title: "Berpikir seperti analis, membangun seperti developer.",
@@ -874,23 +882,75 @@ const defaultData = {
     ]
   },
   projects: [
-    { id: 1, title: 'Sistem Informasi Manajemen Placeholder', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
-    { id: 2, title: 'Dashboard Analitik Placeholder', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
-    { id: 3, title: 'Automation Test Suite Placeholder', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
+    { id: 1, title: 'Sistem Informasi Manajemen Internal', role: 'Full-Stack Developer', description: 'Aplikasi web untuk mengelola data internal — dirancang mulai dari analisis kebutuhan, ERD, hingga implementasi penuh dan pengujian fungsional.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Dashboard Analitik Operasional', role: 'System Analyst & Front-End', description: 'Dashboard real-time untuk visualisasi data operasional, lengkap dengan filter dinamis dan integrasi REST API dari backend Node.js.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Automation Test Suite Web', role: 'QA Engineer', description: 'Kerangka pengujian otomatis untuk aplikasi web internal, mengurangi waktu regression testing manual secara signifikan.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
   ],
   timeline: [
-    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Membangun beberapa aplikasi web untuk klien kecil, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
-    { id: 2, year: '2024', title: 'Magang QA / Junior Developer — Perusahaan Placeholder', role: 'Quality Assurance Intern', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
-    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas Placeholder', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Kerja Mandiri', images: [], desc: 'Membangun beberapa aplikasi web untuk klien, dari perancangan sistem sampai deployment.', date: '2025 — sekarang' },
+    { id: 2, year: '2024', title: 'Magang QA / Junior Developer', role: 'Magang Quality Assurance', images: [], desc: 'Menulis test case, melakukan manual testing, dan membantu perbaikan bug pada aplikasi web internal.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Sistem Informasi — Universitas', role: 'S1, Fakultas Ilmu Komputer', images: [], desc: 'Fokus pada pengembangan perangkat lunak, analisis & perancangan sistem, serta basis data.', date: '2021 — 2025' }
   ],
+  skills: [
+    { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
+    { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
+    { id: 3, num: '/ 03', title: 'Analisis Sistem', list: ['Pengumpulan Kebutuhan', 'UML & Flowchart', 'Desain Basis Data (ERD)', 'Pemodelan Proses Bisnis'] },
+    { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Pengujian Manual', 'Test Case & Test Plan', 'Pelacakan Bug', 'Otomatisasi Dasar (Selenium)'] }
+  ],
+  contact: {
+    title: "Mari bangun sesuatu bersama.",
+    email: "hello@mariaboro.my.id",
+    github: "https://github.com/mariaboro",
+    linkedin: "https://www.linkedin.com/in/mariaboro/",
+    instagram: "https://www.instagram.com/mariaboro_/",
+    cv: "#",
+    footerText: "© 2026 Maria Oxtavia Laurence Siboro. Dibuat dengan dedikasi."
+  },
+  marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'Analisis Sistem', 'UML', 'Pengujian Manual & Otomatis', 'Figma', 'Git', 'REST API']
+};
+
+const defaultData_en = {
+  hero: {
+    firstName: "Maria Oxtavia Laurence",
+    lastName: "Siboro",
+    role: "Full-Stack Developer — System Analyst — QA Engineer",
+    desc: "Information Systems graduate building digital products from system logic to user interface — designing workflows, writing clean code, and ensuring rigorous quality testing before release.",
+    expYears: "4+ years learning & building",
+    projectsCount: "12+ projects shipped",
+    location: "Bandung, ID based, open to remote",
+    terminalLines: "$ whoami\n> Maria Oxtavia Laurence Siboro — Full-Stack & System Analyst\n$ status --check\n> [OK] Available for full-stack & analyst roles\n$ run tests --all\n> 42 passed, 0 failed [100% test coverage]"
+  },
+  about: {
+    title: "Think like an analyst,<br>build like a developer.",
+    note: "An Information Systems background provides me with an end-to-end perspective — from business requirements down to lines of code.",
+    p1: "I am Maria Oxtavia Laurence Siboro, an Information Systems graduate operating at the intersection of software development, system analysis, and quality assurance.",
+    p2: "I believe great products stem from a structured workflow: understanding the problem, modeling clear system architectures, crafting clean code, and testing meticulously until production-ready.",
+    p3: "Beyond coding, I enjoy documenting analytical workflows through diagrams and test cases — a habit carried from system analysis into every engineering project I take on.",
+    stats: [
+      { val: "15+", lbl: "WEB APPS BUILT" },
+      { val: "200+", lbl: "TEST CASES WRITTEN" },
+      { val: "6", lbl: "SYSTEM DESIGN DOCS" },
+      { val: "98%", lbl: "BUG RESOLUTION RATE" }
+    ]
+  },
   skills: [
     { id: 1, num: '/ 01', title: 'Front-End', list: ['React / Next.js', 'JavaScript (ES6+)', 'Tailwind CSS', 'Responsive & Accessible UI'] },
     { id: 2, num: '/ 02', title: 'Back-End', list: ['Node.js / Express', 'Laravel (PHP)', 'REST API Design', 'PostgreSQL / MySQL'] },
     { id: 3, num: '/ 03', title: 'System Analysis', list: ['Requirement Gathering', 'UML & Flowchart', 'Database Design (ERD)', 'Business Process Modeling'] },
     { id: 4, num: '/ 04', title: 'Quality Assurance', list: ['Manual Testing', 'Test Case & Test Plan', 'Bug Tracking', 'Basic Automation (Selenium)'] }
   ],
+  projects: [
+    { id: 1, title: 'Internal Management Information System', role: 'Full-Stack Developer', description: 'Enterprise web application for managing internal operations — engineered from requirement gathering and ERD design to full implementation and functional testing.', tags: ['Laravel', 'MySQL', 'Bootstrap'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 2, title: 'Operational Analytics Dashboard', role: 'System Analyst & Front-End', description: 'Real-time dashboard for operational data visualization, featuring dynamic filtering and REST API integrations powered by Node.js backend.', tags: ['React', 'Node.js', 'Chart.js'], link: 'https://github.com/mariaboro', image: '' },
+    { id: 3, title: 'Web Automation Test Suite', role: 'QA Engineer', description: 'Automated testing framework for internal web applications, significantly cutting down manual regression testing turnaround time.', tags: ['Selenium', 'Python', 'CI/CD'], link: 'https://github.com/mariaboro', image: '' }
+  ],
+  timeline: [
+    { id: 3, year: '2025', title: 'Freelance Full-Stack Developer', role: 'Self-employed', images: [], desc: 'Architecting and building full-stack web applications for clients, from system design through to cloud deployment.', date: '2025 — Present' },
+    { id: 2, year: '2024', title: 'QA Intern / Junior Developer', role: 'Quality Assurance Intern', images: [], desc: 'Authored test suites, executed rigorous manual testing, and assisted engineering teams in debugging web apps.', date: 'Jan — Jun 2024' },
+    { id: 1, year: '2021', title: 'Information Systems — University', role: 'Bachelor Degree, Computer Science', images: [], desc: 'Focused on software engineering, system analysis & design, database architecture, and QA methodologies.', date: '2021 — 2025' }
+  ],
   contact: {
-    title: "Mari bangun sesuatu bersama.",
+    title: "Let's build something together.",
     email: "hello@mariaboro.my.id",
     github: "https://github.com/mariaboro",
     linkedin: "https://www.linkedin.com/in/mariaboro/",
@@ -901,14 +961,17 @@ const defaultData = {
   marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API']
 };
 
+let currentCmsLang = 'en';
+
 function getLocalData() {
-  const saved = localStorage.getItem('porto_cms_data');
-  return saved ? JSON.parse(saved) : defaultData;
+  const saved = localStorage.getItem(`porto_cms_data_${currentCmsLang}`);
+  const defaultObj = currentCmsLang === 'en' ? defaultData_en : defaultData_id;
+  return saved ? JSON.parse(saved) : defaultObj;
 }
 
 function saveLocalData(data) {
   try {
-    localStorage.setItem('porto_cms_data', JSON.stringify(data));
+    localStorage.setItem(`porto_cms_data_${currentCmsLang}`, JSON.stringify(data));
   } catch (e) {
     console.warn('LocalStorage quota exceeded:', e);
     showToast('⚠️ Kapasitas browser (LocalStorage) penuh. Coba kurangi foto atau gunakan URL foto.', 'error');
@@ -1033,55 +1096,86 @@ function showLoginScreen() {
 }
 
 /* ---------- CMS LOAD & SAVE LOGIC ---------- */
+function switchCmsLang(lang) {
+  currentCmsLang = lang;
+  const btnId = document.getElementById('btnCmsId');
+  const btnEn = document.getElementById('btnCmsEn');
+  const badge = document.getElementById('cmsLangBadge');
+
+  if (lang === 'id') {
+    btnId.className = 'btn btn-primary btn-sm';
+    btnEn.className = 'btn btn-secondary btn-sm';
+    if (badge) badge.textContent = 'Mode Edit: Bahasa Indonesia (ID)';
+  } else {
+    btnId.className = 'btn btn-secondary btn-sm';
+    btnEn.className = 'btn btn-primary btn-sm';
+    if (badge) badge.textContent = 'Mode Edit: English (EN)';
+  }
+
+  cmsData = getLocalData();
+  loadAllDataIntoForm();
+  showToast(`Mengalihkan ke mode edit: ${lang.toUpperCase()}`, 'success');
+}
+
 async function loadAllDataIntoForm() {
+  const defaultObj = currentCmsLang === 'en' ? defaultData_en : defaultData_id;
+  cmsData = getLocalData();
+
   // Try fetching from Supabase settings table if logged in
   if (supabaseClient && !isDemoMode) {
-    const { data } = await supabaseClient.from('site_settings').select('*');
-    if (data && data.length > 0) {
-      data.forEach(row => {
-        if (row.id && row.data) cmsData[row.id] = row.data;
-      });
-      saveLocalData(cmsData);
-    }
+    try {
+      const { data } = await supabaseClient.from('site_settings').select('*');
+      if (data && data.length > 0) {
+        const langData = data.filter(r => r.id.endsWith(`_${currentCmsLang}`));
+        if (langData.length > 0) {
+          langData.forEach(row => {
+            const cleanId = row.id.replace(`_${currentCmsLang}`, '');
+            cmsData[cleanId] = row.data;
+          });
+          saveLocalData(cmsData);
+        }
+      }
+    } catch(e){}
   }
 
   // Populate Hero
-  const h = cmsData.hero || defaultData.hero;
-  document.getElementById('heroFirstName').value = h.firstName;
-  document.getElementById('heroLastName').value = h.lastName;
-  document.getElementById('heroRole').value = h.role;
-  document.getElementById('heroDesc').value = h.desc;
-  document.getElementById('heroExpYears').value = h.expYears;
-  document.getElementById('heroProjectsCount').value = h.projectsCount;
-  document.getElementById('heroLocation').value = h.location;
-  document.getElementById('terminalLines').value = h.terminalLines;
+  const h = cmsData.hero || defaultObj.hero;
+  document.getElementById('heroFirstName').value = h.firstName || '';
+  document.getElementById('heroLastName').value = h.lastName || '';
+  document.getElementById('heroRole').value = h.role || '';
+  document.getElementById('heroDesc').value = h.desc || '';
+  document.getElementById('heroExpYears').value = h.expYears || '';
+  document.getElementById('heroProjectsCount').value = h.projectsCount || '';
+  document.getElementById('heroLocation').value = h.location || '';
+  document.getElementById('terminalLines').value = h.terminalLines || '';
 
   // Populate About
-  const a = cmsData.about || defaultData.about;
-  document.getElementById('aboutTitle').value = a.title;
-  document.getElementById('aboutNote').value = a.note;
-  document.getElementById('aboutP1').value = a.p1;
-  document.getElementById('aboutP2').value = a.p2;
-  document.getElementById('aboutP3').value = a.p3;
+  const a = cmsData.about || defaultObj.about;
+  document.getElementById('aboutTitle').value = a.title || '';
+  document.getElementById('aboutNote').value = a.note || '';
+  document.getElementById('aboutP1').value = a.p1 || '';
+  document.getElementById('aboutP2').value = a.p2 || '';
+  document.getElementById('aboutP3').value = a.p3 || '';
   if (a.stats && a.stats.length >= 4) {
     document.getElementById('stat1Val').value = a.stats[0].val; document.getElementById('stat1Lbl').value = a.stats[0].lbl;
     document.getElementById('stat2Val').value = a.stats[1].val; document.getElementById('stat2Lbl').value = a.stats[1].lbl;
     document.getElementById('stat3Val').value = a.stats[2].val; document.getElementById('stat3Lbl').value = a.stats[2].lbl;
-    document.getElementById('stat4Val').value = a.stats[3].val; document.getElementById('stat4Lbl').value = a.stats[3].lbl;
+    document.getElementById('stat4Val').value = a.stats[4] ? a.stats[3].val : (a.stats[3]?.val || ''); 
+    document.getElementById('stat4Lbl').value = a.stats[3]?.lbl || '';
   }
 
   // Populate Contact
-  const c = cmsData.contact || defaultData.contact;
-  document.getElementById('contactTitle').value = c.title;
-  document.getElementById('contactEmail').value = c.email;
-  document.getElementById('contactGithub').value = c.github;
-  document.getElementById('contactLinkedin').value = c.linkedin;
-  document.getElementById('contactInstagram').value = c.instagram;
-  document.getElementById('contactCv').value = c.cv;
-  document.getElementById('footerText').value = c.footerText;
+  const c = cmsData.contact || defaultObj.contact;
+  document.getElementById('contactTitle').value = c.title || '';
+  document.getElementById('contactEmail').value = c.email || '';
+  document.getElementById('contactGithub').value = c.github || '';
+  document.getElementById('contactLinkedin').value = c.linkedin || '';
+  document.getElementById('contactInstagram').value = c.instagram || '';
+  document.getElementById('contactCv').value = c.cv || '';
+  document.getElementById('footerText').value = c.footerText || '';
 
   // Populate Marquee
-  const m = cmsData.marquee || defaultData.marquee;
+  const m = cmsData.marquee || defaultObj.marquee;
   document.getElementById('marqueeItems').value = Array.isArray(m) ? m.join(', ') : m;
 
   renderProjectsGrid();
@@ -1094,21 +1188,23 @@ async function saveSettingToSupabase(key, payload) {
   cmsData[key] = payload;
   saveLocalData(cmsData);
 
+  const supabaseKey = `${key}_${currentCmsLang}`;
+
   if (supabaseClient) {
     try {
-      const { error } = await supabaseClient.from('site_settings').upsert({ id: key, data: payload });
+      const { error } = await supabaseClient.from('site_settings').upsert({ id: supabaseKey, data: payload });
       if (error) {
         console.error('Error saving to Supabase:', error);
-        showToast('⚠️ Data disimpan di Browser (Local). Supabase: ' + error.message, 'error');
+        showToast(`⚠️ Data [${currentCmsLang.toUpperCase()}] disimpan di Browser (Local).`, 'error');
         return;
       }
     } catch (e) {
       console.error('Supabase exception:', e);
-      showToast('⚠️ Data disimpan di LocalStorage.', 'error');
+      showToast(`⚠️ Data [${currentCmsLang.toUpperCase()}] disimpan di LocalStorage.`, 'error');
       return;
     }
   }
-  showToast('Berhasil disimpan ke Cloud Supabase!', 'success');
+  showToast(`Berhasil disimpan untuk versi [${currentCmsLang.toUpperCase()}]!`, 'success');
 }
 
 async function saveHeroSection() {
