@@ -1287,8 +1287,24 @@ async function saveSettingToSupabase(key, payload) {
       const supabaseKey = `${key}_${currentCmsLang}`;
       const { error } = await supabaseClient.from('site_settings').upsert({ id: supabaseKey, data: payload });
       
-      // Also update the base key when saving in 'id' mode for compatibility
-      if (currentCmsLang === 'id') {
+      // For structural list items (projects, timeline, skills), synchronize deletions & changes across all language versions
+      if (['projects', 'timeline', 'skills'].includes(key)) {
+        // 1. Update base key in Supabase
+        await supabaseClient.from('site_settings').upsert({ id: key, data: payload });
+
+        // 2. Sync LocalStorage for the other language so switching mode stays 100% in sync
+        const otherLang = currentCmsLang === 'en' ? 'id' : 'en';
+        try {
+          const otherSaved = localStorage.getItem(`porto_cms_data_${otherLang}`);
+          let otherData = otherSaved ? JSON.parse(otherSaved) : {};
+          otherData[key] = payload;
+          localStorage.setItem(`porto_cms_data_${otherLang}`, JSON.stringify(otherData));
+        } catch(e){}
+
+        // 3. Update Supabase for the other language key as well (e.g. projects_id and projects_en)
+        await supabaseClient.from('site_settings').upsert({ id: `${key}_${otherLang}`, data: payload });
+      } else if (currentCmsLang === 'id') {
+        // Also update base key when saving single sections in 'id' mode for compatibility
         await supabaseClient.from('site_settings').upsert({ id: key, data: payload });
       }
 
@@ -1303,7 +1319,7 @@ async function saveSettingToSupabase(key, payload) {
       return;
     }
   }
-  showToast(`Berhasil disimpan ke Supabase Database [${currentCmsLang.toUpperCase()}]!`, 'success');
+  showToast(`Berhasil disimpan & disinkronkan untuk semua versi bahasa!`, 'success');
 }
 
 async function saveHeroSection() {
