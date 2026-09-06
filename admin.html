@@ -1128,6 +1128,15 @@ function getLocalData() {
 function saveLocalData(data) {
   try {
     localStorage.setItem(`porto_cms_data_${currentCmsLang}`, JSON.stringify(data));
+    // Also sync structural lists (projects, timeline, skills, contact, marquee) to alternate language local storage
+    const altLang = currentCmsLang === 'en' ? 'id' : 'en';
+    const altSaved = localStorage.getItem(`porto_cms_data_${altLang}`);
+    let altData = altSaved ? JSON.parse(altSaved) : {};
+    ['projects', 'timeline', 'skills', 'contact', 'marquee'].forEach(k => {
+      if (data[k]) altData[k] = data[k];
+    });
+    localStorage.setItem(`porto_cms_data_${altLang}`, JSON.stringify(altData));
+    localStorage.setItem('porto_cms_data', JSON.stringify(data));
   } catch (e) {
     console.warn('LocalStorage quota exceeded:', e);
     showToast('⚠️ Kapasitas browser (LocalStorage) penuh. Coba kurangi foto atau gunakan URL foto.', 'error');
@@ -1366,7 +1375,7 @@ async function saveSettingToSupabase(key, payload) {
       const { error } = await supabaseClient.from('site_settings').upsert({ id: supabaseKey, data: payload });
       
       // For structural list items (projects, timeline, skills), synchronize deletions & changes across all language versions
-      if (['projects', 'timeline', 'skills'].includes(key)) {
+      if (['projects', 'timeline', 'skills', 'contact', 'marquee'].includes(key)) {
         // 1. Update base key in Supabase
         await supabaseClient.from('site_settings').upsert({ id: key, data: payload });
 

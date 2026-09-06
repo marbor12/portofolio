@@ -1697,6 +1697,7 @@ function setLanguage(lang) {
 
 function renderSyncCMSContent(lang) {
   const defaultObj = lang === 'en' ? defaultData_en : defaultData_id;
+  const altLang = lang === 'en' ? 'id' : 'en';
   let cmsData = inMemoryCmsCache[lang];
 
   // Helper to detect dummy project templates
@@ -1721,34 +1722,36 @@ function renderSyncCMSContent(lang) {
     }
   }
 
-  // 2. If EN is selected but no EN data saved, fallback to ID data & translate dynamically
-  if (!cmsData && lang === 'en') {
-    const savedId = localStorage.getItem('porto_cms_data_id') || localStorage.getItem('porto_cms_data');
-    if (savedId) {
+  // 2. Cross-language fallback: if requested lang has no saved data, check alternate language or base
+  if (!cmsData) {
+    const savedAlt = localStorage.getItem(`porto_cms_data_${altLang}`) || localStorage.getItem('porto_cms_data');
+    if (savedAlt) {
       try {
-        const parsedId = JSON.parse(savedId);
-        if (!containsDummyProjects(parsedId)) {
-          cmsData = parsedId;
+        const parsedAlt = JSON.parse(savedAlt);
+        if (!containsDummyProjects(parsedAlt)) {
+          cmsData = parsedAlt;
         }
       } catch(e){}
     }
   }
 
-  // 3. Fallback to default object per language if still null
+  // 3. Merge structural items from alternate language cache/storage if missing
+  const altCache = inMemoryCmsCache[altLang] || (localStorage.getItem(`porto_cms_data_${altLang}`) ? JSON.parse(localStorage.getItem(`porto_cms_data_${altLang}`)) : null);
+
   if (!cmsData) {
     cmsData = defaultObj;
-  } else {
-    cmsData = {
-      hero: cmsData.hero || defaultObj.hero,
-      about: cmsData.about || defaultObj.about,
-      skills: cmsData.skills || defaultObj.skills,
-      projects: cmsData.projects || defaultObj.projects,
-      timeline: cmsData.timeline || defaultObj.timeline,
-      contact: cmsData.contact || defaultObj.contact,
-      marquee: cmsData.marquee || defaultObj.marquee,
-      labels: defaultObj.labels
-    };
   }
+
+  cmsData = {
+    hero: cmsData.hero || (altCache && altCache.hero) || defaultObj.hero,
+    about: cmsData.about || (altCache && altCache.about) || defaultObj.about,
+    skills: (cmsData.skills && cmsData.skills.length > 0) ? cmsData.skills : ((altCache && altCache.skills) || defaultObj.skills),
+    projects: (cmsData.projects && cmsData.projects.length > 0) ? cmsData.projects : ((altCache && altCache.projects) || defaultObj.projects),
+    timeline: (cmsData.timeline && cmsData.timeline.length > 0) ? cmsData.timeline : ((altCache && altCache.timeline) || defaultObj.timeline),
+    contact: cmsData.contact || (altCache && altCache.contact) || defaultObj.contact,
+    marquee: (cmsData.marquee && cmsData.marquee.length > 0) ? cmsData.marquee : ((altCache && altCache.marquee) || defaultObj.marquee),
+    labels: defaultObj.labels
+  };
 
   const labels = defaultObj.labels;
 
@@ -2151,31 +2154,43 @@ async function syncSupabaseInBackground(lang) {
       return;
     }
     if (data && data.length > 0) {
-      const remoteCmsData = {};
-      // 1. Load base keys first (default Indonesian records saved without _id)
+      const remoteCmsDataId = {};
+      const remoteCmsDataEn = {};
+
+      // 1. Load base keys first into both language objects
       data.forEach(row => {
         if (!row.id.includes('_')) {
-          remoteCmsData[row.id] = row.data;
-        }
-      });
-      // 2. Override with language-specific keys (e.g. hero_id or hero_en) if they exist and are not dummy items
-      data.forEach(row => {
-        if (row.id.endsWith(`_${lang}`)) {
-          const cleanId = row.id.replace(`_${lang}`, '');
-          const isDummy = Array.isArray(row.data) && row.data.some(item => item.title && item.title.includes('Internal Management Information System'));
-          if (!isDummy) {
-            remoteCmsData[cleanId] = row.data;
-          }
+          remoteCmsDataId[row.id] = row.data;
+          remoteCmsDataEn[row.id] = row.data;
         }
       });
 
-      if (Object.keys(remoteCmsData).length > 0) {
-        inMemoryCmsCache[lang] = remoteCmsData;
-        localStorage.setItem(`porto_cms_data_${lang}`, JSON.stringify(remoteCmsData));
-        if (currentLang === lang) {
-          renderSyncCMSContent(lang);
+      // 2. Load _id and _en overrides
+      data.forEach(row => {
+        const isDummy = Array.isArray(row.data) && row.data.some(item => item.title && item.title.includes('Internal Management Information System'));
+        if (isDummy) return;
+
+        if (row.id.endsWith('_id')) {
+          const cleanId = row.id.replace('_id', '');
+          remoteCmsDataId[cleanId] = row.data;
+        } else if (row.id.endsWith('_en')) {
+          const cleanId = row.id.replace('_en', '');
+          remoteCmsDataEn[cleanId] = row.data;
         }
+      });
+
+      // 3. Save both ID & EN caches into memory and LocalStorage
+      if (Object.keys(remoteCmsDataId).length > 0) {
+        inMemoryCmsCache['id'] = remoteCmsDataId;
+        localStorage.setItem('porto_cms_data_id', JSON.stringify(remoteCmsDataId));
       }
+      if (Object.keys(remoteCmsDataEn).length > 0) {
+        inMemoryCmsCache['en'] = remoteCmsDataEn;
+        localStorage.setItem('porto_cms_data_en', JSON.stringify(remoteCmsDataEn));
+      }
+
+      // Re-render current language instantly
+      renderSyncCMSContent(currentLang);
     }
   } catch(e) {
     console.error('Supabase sync exception:', e);
