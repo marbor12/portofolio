@@ -348,7 +348,7 @@ textarea.form-control{min-height:110px;resize:vertical;}
 <nav class="admin-nav">
   <div class="logo">
     <span class="dot"></span>
-    mariaboro.dev
+    mariaboro
     <span class="badge-admin">FULL CMS CONTROL</span>
   </div>
   <div class="nav-actions">
@@ -369,7 +369,7 @@ textarea.form-control{min-height:110px;resize:vertical;}
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="form-group">
         <label for="adminEmail">Email Address</label>
-        <input type="email" id="adminEmail" class="form-control" placeholder="admin@mariaboro.dev" required>
+        <input type="email" id="adminEmail" class="form-control" placeholder="admin@mariaboro" required>
       </div>
       <div class="form-group">
         <label for="adminPassword">Password</label>
@@ -1223,7 +1223,7 @@ async function handleLogin(e) {
 function enableDemoMode() {
   isDemoMode = true;
   showToast('Masuk dalam Mode Preview Demo CMS Admin', 'success');
-  onLoginSuccess('demo-admin@mariaboro.dev');
+  onLoginSuccess('demo-admin@mariaboro');
 }
 
 async function handleLogout() {
