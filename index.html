@@ -250,30 +250,6 @@ nav.scrolled{
 }
 @media (max-width:960px){ .hero{padding:90px 0 40px;} }
 
-.hero-video-bg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index:0;
-  pointer-events:none;
-}
-.hero-video-bg video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  transform:translateZ(0);
-  will-change:transform;
-}
-.hero-video-overlay{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse at center, rgba(5,8,16,0.15) 0%, rgba(5,8,16,0.6) 75%, var(--bg) 100%),
-             linear-gradient(180deg, rgba(5,8,16,0.4) 0%, rgba(5,8,16,0.68) 70%, var(--bg) 100%);
-  z-index:1;
-  pointer-events:none;
-}
 .hero-inner{
   position:relative;
   z-index:2;
@@ -432,10 +408,8 @@ section.section-pad{padding:110px 0;}
 
 /* ---------- balanced about section & stats ---------- */
 .about-grid{
-  display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;
-  align-items:start;
+  display:block;max-width:840px;
 }
-@media (max-width:860px){ .about-grid{grid-template-columns:1fr;gap:32px;} }
 
 .about-text{
   display:flex;flex-direction:column;gap:14px;
@@ -841,13 +815,6 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
 
 <!-- HERO -->
 <header class="hero">
-  <div class="hero-video-bg">
-    <video autoplay loop muted playsinline preload="auto">
-      <source src="hero-section.mp4" type="video/mp4">
-    </video>
-    <div class="hero-video-overlay"></div>
-  </div>
-
   <div class="wrap hero-inner">
     <div class="hero-grid">
       <div>
@@ -910,12 +877,6 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
         <p>I am <strong>Maria Oxtavia Laurence Siboro</strong>, an Information Systems graduate operating at the intersection of <strong>software development</strong>, <strong>system analysis</strong>, and <strong>quality assurance</strong>.</p>
         <p>I believe great products stem from a structured workflow: understanding the problem, modeling clear system architectures, crafting clean code, and testing meticulously until production-ready.</p>
         <p>Beyond coding, I enjoy documenting analytical workflows through diagrams and test cases — a habit carried from system analysis into every engineering project I take on.</p>
-      </div>
-      <div class="stat-grid reveal">
-        <div class="stat"><b>15+</b><span>WEB APPS BUILT</span></div>
-        <div class="stat"><b>200+</b><span>TEST CASES WRITTEN</span></div>
-        <div class="stat"><b>6</b><span>SYSTEM DESIGN DOCS</span></div>
-        <div class="stat"><b>98%</b><span>BUG RESOLUTION RATE</span></div>
       </div>
     </div>
   </div>
@@ -1097,7 +1058,7 @@ footer p{font-family:var(--ff-mono);font-size:0.76rem;color:var(--ink-faint);}
     <a href="https://github.com/mariaboro" target="_blank" rel="noopener noreferrer">GitHub</a>
     <a href="https://www.linkedin.com/in/mariaboro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     <a href="https://www.instagram.com/mariaboro_/" target="_blank" rel="noopener noreferrer">Instagram</a>
-    <a href="#">CV / Resume</a>
+    <a href="https://drive.google.com/file/d/13w1tEdHtC2-LCJy3-RgSUwAb9m1Fge-O/view?usp=drive_link" target="_blank" rel="noopener noreferrer">CV / Resume</a>
   </div>
 </section>
 
@@ -1487,7 +1448,7 @@ const defaultData_id = {
     github: "https://github.com/mariaboro",
     linkedin: "https://www.linkedin.com/in/mariaboro/",
     instagram: "https://www.instagram.com/mariaboro_/",
-    cv: "#",
+    cv: "https://drive.google.com/file/d/13w1tEdHtC2-LCJy3-RgSUwAb9m1Fge-O/view?usp=drive_link",
     footerText: "© 2026 Maria Oxtavia Laurence Siboro. Dibuat dengan dedikasi."
   },
   marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'Analisis Sistem', 'UML', 'Pengujian Manual & Otomatis', 'Figma', 'Git', 'REST API'],
@@ -1643,7 +1604,7 @@ const defaultData_en = {
     github: "https://github.com/mariaboro",
     linkedin: "https://www.linkedin.com/in/mariaboro/",
     instagram: "https://www.instagram.com/mariaboro_/",
-    cv: "#",
+    cv: "https://drive.google.com/file/d/13w1tEdHtC2-LCJy3-RgSUwAb9m1Fge-O/view?usp=drive_link",
     footerText: "© 2026 Maria Oxtavia Laurence Siboro. Built with intent."
   },
   marquee: ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'System Analysis', 'UML', 'Manual & Automation Testing', 'Figma', 'Git', 'REST API'],
@@ -2159,7 +2120,7 @@ window.toggleTimeline = function(btn, remainingCount) {
         <a href="${c.github || '#'}" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="${c.linkedin || '#'}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <a href="${c.instagram || '#'}" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="${c.cv || '#'}">CV / Resume</a>
+        <a href="${c.cv || 'https://drive.google.com/file/d/13w1tEdHtC2-LCJy3-RgSUwAb9m1Fge-O/view?usp=drive_link'}" target="_blank" rel="noopener noreferrer">CV / Resume</a>
       `;
     }
 
