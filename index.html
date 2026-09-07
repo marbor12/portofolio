@@ -1466,6 +1466,10 @@ const defaultData_id = {
     workTitle: "Project terpilih.",
     workNote: "Daftar karya aplikasi web, arsitektur sistem, dan pengujian yang telah dikembangkan.",
     expEyebrow: "04 / TIMELINE",
+    expTitle: "A brief journey.",
+    expNote: "Chronological timeline — education, internships, and work experience.",
+    btnMoreProjects: "Show More Projects (+{count}) ↴",
+    btnLessProjects: "Show Less ↑",
     expTitle: "Perjalanan singkat.",
     expNote: "Urutan kronologis — pendidikan, magang, dan pengalaman kerja.",
     btnMoreProjects: "Tampilkan Lebih Banyak Project (+{count}) ↴",
@@ -1622,8 +1626,15 @@ const defaultData_en = {
     workTitle: "Selected work.",
     workNote: "A showcase of web applications, system design, and software testing suites.",
     expEyebrow: "04 / TIMELINE",
+    expTitle: "A brief journey.",
+    expNote: "Chronological timeline — education, internships, and work experience.",
+    btnMoreProjects: "Show More Projects (+{count}) ↴",
+    btnLessProjects: "Show Less ↑",
     btnMoreTimeline: "Show More Experience (+{count}) ↴",
-    btnLessTimeline: "Show Less ↑"
+    btnLessTimeline: "Show Less ↑",
+    lightboxTag: "MEDIA DOCUMENTATION",
+    lightboxEnlarge: "🔍 Enlarge",
+    backToTop: "↑ Back to top"
   }
 };
 
@@ -1652,6 +1663,12 @@ function translateToEn(text) {
     [/Kerangka pengujian otomatis untuk aplikasi web internal,\s*mengurangi waktu regression testing manual secara signifikan\./gi, "Automated testing framework for internal web applications, significantly cutting down manual regression testing turnaround time."],
 
     // Timeline / Experience
+    [/Perjalanan singkat\./gi, "A brief journey."],
+    [/Perjalanan singkat/gi, "A brief journey"],
+    [/Urutan kronologis — pendidikan, magang, dan pengalaman kerja\./gi, "Chronological timeline — education, internships, and work experience."],
+    [/Perjalanan singkat\./gi, "A brief journey."],
+    [/Perjalanan singkat/gi, "A brief journey"],
+    [/Urutan kronologis — pendidikan, magang, dan pengalaman kerja\./gi, "Chronological timeline — education, internships, and work experience."],
     [/Menyelenggarakan event/gi, "Organizing and executing tech events and operations"],
     [/- Berpartisipasi sebagai event organizer/gi, "- Participating as an event organizer and curriculum manager"],
     [/Asisten Praktikum/gi, "Lab Teaching Assistant"],
@@ -1981,8 +1998,8 @@ window.toggleProjects = function(btn, remainingCount) {
 
   // F. Render Timeline Section
   const expEyebrow = document.querySelector('#experience .eyebrow'); if (expEyebrow) expEyebrow.textContent = labels.expEyebrow;
-  const expTitle = document.querySelector('#experience .sec-title'); if (expTitle) expTitle.textContent = labels.expTitle;
-  const expNote = document.querySelector('#experience .sec-note'); if (expNote) expNote.textContent = labels.expNote;
+  const expTitle = document.querySelector('#experience .sec-title'); if (expTitle) expTitle.textContent = lang === 'en' ? (labels.expTitle ? translateToEn(labels.expTitle) : 'A brief journey.') : (labels.expTitle || 'Perjalanan singkat.');
+  const expNote = document.querySelector('#experience .sec-note'); if (expNote) expNote.textContent = lang === 'en' ? (labels.expNote ? translateToEn(labels.expNote) : 'Chronological timeline — education, internships, and work experience.') : (labels.expNote || 'Urutan kronologis — pendidikan, magang, dan pengalaman kerja.');
 
   if (cmsData.timeline && Array.isArray(cmsData.timeline) && cmsData.timeline.length > 0) {
     const tContainer = document.querySelector('.timeline');
